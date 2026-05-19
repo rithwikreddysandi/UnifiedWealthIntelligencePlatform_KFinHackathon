@@ -1,107 +1,37 @@
-import { Router }
-  from "express";
+import { Router } from "express";
 
-import * as alertController
-  from "../controllers/alert.controller.js";
+import * as alertController from "../controllers/alert.controller.js";
 
-import {
-  authMiddleware,
-} from "../middlewares/auth.middleware.js";
-
-
+import { authMiddleware } from "../middlewares/auth.middleware.js";
 
 const router = Router();
 
+router.post("/", authMiddleware, alertController.createAlert);
 
+router.get("/", authMiddleware, alertController.getAllAlerts);
 
-// CREATE ALERT
-router.post(
-  "/",
-  authMiddleware,
-  alertController.createAlert
-);
+router.get("/:id", authMiddleware, alertController.getAlertById);
 
-
-
-// GET ALL ALERTS
-router.get(
-  "/",
-  authMiddleware,
-  alertController.getAllAlerts
-);
-
-
-
-// GET ALERT BY ID
-router.get(
-  "/:id",
-  authMiddleware,
-  alertController.getAlertById
-);
-
-
-
-// GET INVESTOR ALERTS
 router.get(
   "/investor/:investorId",
   authMiddleware,
-  alertController.getInvestorAlerts
+  alertController.getInvestorAlerts,
 );
 
+router.put("/:id", authMiddleware, alertController.updateAlert);
 
+router.delete("/:id", authMiddleware, alertController.deleteAlert);
 
-// UPDATE ALERT
-router.put(
-  "/:id",
-  authMiddleware,
-  alertController.updateAlert
-);
+router.get("/status/open", authMiddleware, alertController.getOpenAlerts);
 
-
-
-// DELETE ALERT
-router.delete(
-  "/:id",
-  authMiddleware,
-  alertController.deleteAlert
-);
-
-
-
-// GET OPEN ALERTS
-router.get(
-  "/status/open",
-  authMiddleware,
-  alertController.getOpenAlerts
-);
-
-
-
-// GET CRITICAL ALERTS
 router.get(
   "/status/critical",
   authMiddleware,
-  alertController.getCriticalAlerts
+  alertController.getCriticalAlerts,
 );
 
+router.patch("/resolve/:id", authMiddleware, alertController.resolveAlert);
 
-
-// RESOLVE ALERT
-router.patch(
-  "/resolve/:id",
-  authMiddleware,
-  alertController.resolveAlert
-);
-
-
-
-// DISMISS ALERT
-router.patch(
-  "/dismiss/:id",
-  authMiddleware,
-  alertController.dismissAlert
-);
-
-
+router.patch("/dismiss/:id", authMiddleware, alertController.dismissAlert);
 
 export default router;

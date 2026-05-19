@@ -1,14 +1,11 @@
 import { Response } from "express";
 
-
-
 export const successResponse = (
   res: Response,
   message: string,
   data: any = null,
-  statusCode: number = 200
+  statusCode: number = 200,
 ) => {
-
   return res.status(statusCode).json({
     success: true,
     message,
@@ -16,23 +13,16 @@ export const successResponse = (
   });
 };
 
-
-
-
 export const errorResponse = (
   res: Response,
   message: string,
   statusCode: number = 500,
-  error: any = null
+  error: any = null,
 ) => {
-
   return res.status(statusCode).json({
     success: false,
     message,
 
-    error:
-      process.env.NODE_ENV === "development"
-        ? error
-        : undefined,
+    error: process.env.NODE_ENV === "development" ? error : undefined,
   });
 };

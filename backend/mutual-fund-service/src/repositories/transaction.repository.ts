@@ -5,12 +5,7 @@ import {
   UpdateFundTransactionDTO,
 } from "../models/fundTransaction.model.js";
 
-
-
-export const createTransaction = async (
-  payload: CreateFundTransactionDTO
-) => {
-
+export const createTransaction = async (payload: CreateFundTransactionDTO) => {
   const query = `
     INSERT INTO fund_transactions (
       investor_id,
@@ -34,108 +29,66 @@ export const createTransaction = async (
     payload.nav,
   ];
 
-  const result = await pool.query(
-    query,
-    values
-  );
+  const result = await pool.query(query, values);
 
   return result.rows[0];
 };
 
-
-
-
-
-export const getAllTransactions =
-  async () => {
-
-    const query = `
+export const getAllTransactions = async () => {
+  const query = `
       SELECT *
       FROM fund_transactions
       ORDER BY created_at DESC;
     `;
 
-    const result = await pool.query(query);
+  const result = await pool.query(query);
 
-    return result.rows;
-  };
+  return result.rows;
+};
 
-
-
-
-
-export const getTransactionById =
-  async (id: string) => {
-
-    const query = `
+export const getTransactionById = async (id: string) => {
+  const query = `
       SELECT *
       FROM fund_transactions
       WHERE id = $1;
     `;
 
-    const result = await pool.query(
-      query,
-      [id]
-    );
+  const result = await pool.query(query, [id]);
 
-    return result.rows[0];
-  };
+  return result.rows[0];
+};
 
-
-
-
-
-export const getInvestorTransactions =
-  async (investorId: string) => {
-
-    const query = `
+export const getInvestorTransactions = async (investorId: string) => {
+  const query = `
       SELECT *
       FROM fund_transactions
       WHERE investor_id = $1
       ORDER BY transaction_date DESC;
     `;
 
-    const result = await pool.query(
-      query,
-      [investorId]
-    );
+  const result = await pool.query(query, [investorId]);
 
-    return result.rows;
-  };
+  return result.rows;
+};
 
-
-
-
-
-export const getFundTransactions =
-  async (fundId: string) => {
-
-    const query = `
+export const getFundTransactions = async (fundId: string) => {
+  const query = `
       SELECT *
       FROM fund_transactions
       WHERE fund_id = $1
       ORDER BY transaction_date DESC;
     `;
 
-    const result = await pool.query(
-      query,
-      [fundId]
-    );
+  const result = await pool.query(query, [fundId]);
 
-    return result.rows;
-  };
+  return result.rows;
+};
 
-
-
-
-
-export const updateTransaction =
-  async (
-    id: string,
-    payload: UpdateFundTransactionDTO
-  ) => {
-
-    const query = `
+export const updateTransaction = async (
+  id: string,
+  payload: UpdateFundTransactionDTO,
+) => {
+  const query = `
       UPDATE fund_transactions
       SET
         status = COALESCE($1, status),
@@ -145,76 +98,47 @@ export const updateTransaction =
       RETURNING *;
     `;
 
-    const values = [
-      payload.status,
-      payload.units,
-      payload.nav,
-      id,
-    ];
+  const values = [payload.status, payload.units, payload.nav, id];
 
-    const result = await pool.query(
-      query,
-      values
-    );
+  const result = await pool.query(query, values);
 
-    return result.rows[0];
-  };
+  return result.rows[0];
+};
 
-
-
-
-
-export const deleteTransaction =
-  async (id: string) => {
-
-    const query = `
+export const deleteTransaction = async (id: string) => {
+  const query = `
       DELETE FROM fund_transactions
       WHERE id = $1
       RETURNING *;
     `;
 
-    const result = await pool.query(
-      query,
-      [id]
-    );
+  const result = await pool.query(query, [id]);
 
-    return result.rows[0];
-  };
+  return result.rows[0];
+};
 
-
-
-
-
-export const getPendingTransactions =
-  async () => {
-
-    const query = `
+export const getPendingTransactions = async () => {
+  const query = `
       SELECT *
       FROM fund_transactions
       WHERE status = 'PENDING'
       ORDER BY created_at ASC;
     `;
 
-    const result = await pool.query(query);
+  const result = await pool.query(query);
 
-    return result.rows;
-  };
+  return result.rows;
+};
 
-
-
-
-
-export const getFailedTransactions =
-  async () => {
-
-    const query = `
+export const getFailedTransactions = async () => {
+  const query = `
       SELECT *
       FROM fund_transactions
       WHERE status = 'FAILED'
       ORDER BY created_at DESC;
     `;
 
-    const result = await pool.query(query);
+  const result = await pool.query(query);
 
-    return result.rows;
-  };
+  return result.rows;
+};

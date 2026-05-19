@@ -5,12 +5,7 @@ import {
   UpdateInvestorHoldingDTO,
 } from "../models/investorHolding.model.js";
 
-
-
-export const createHolding = async (
-  payload: CreateInvestorHoldingDTO
-) => {
-
+export const createHolding = async (payload: CreateInvestorHoldingDTO) => {
   const query = `
     INSERT INTO investor_fund_holdings (
       investor_id,
@@ -35,43 +30,25 @@ export const createHolding = async (
     payload.profit_loss,
   ];
 
-  const result = await pool.query(
-    query,
-    values
-  );
+  const result = await pool.query(query, values);
 
   return result.rows[0];
 };
 
-
-
-
-
-export const getHoldingById =
-  async (id: string) => {
-
-    const query = `
+export const getHoldingById = async (id: string) => {
+  const query = `
       SELECT *
       FROM investor_fund_holdings
       WHERE id = $1;
     `;
 
-    const result = await pool.query(
-      query,
-      [id]
-    );
+  const result = await pool.query(query, [id]);
 
-    return result.rows[0];
-  };
+  return result.rows[0];
+};
 
-
-
-
-
-export const getInvestorHoldings =
-  async (investorId: string) => {
-
-    const query = `
+export const getInvestorHoldings = async (investorId: string) => {
+  const query = `
       SELECT
         h.*,
         mf.fund_name,
@@ -85,50 +62,32 @@ export const getInvestorHoldings =
       ORDER BY h.updated_at DESC;
     `;
 
-    const result = await pool.query(
-      query,
-      [investorId]
-    );
+  const result = await pool.query(query, [investorId]);
 
-    return result.rows;
-  };
+  return result.rows;
+};
 
-
-
-
-
-export const getHoldingByInvestorAndFund =
-  async (
-    investorId: string,
-    fundId: string
-  ) => {
-
-    const query = `
+export const getHoldingByInvestorAndFund = async (
+  investorId: string,
+  fundId: string,
+) => {
+  const query = `
       SELECT *
       FROM investor_fund_holdings
       WHERE investor_id = $1
       AND fund_id = $2;
     `;
 
-    const result = await pool.query(
-      query,
-      [investorId, fundId]
-    );
+  const result = await pool.query(query, [investorId, fundId]);
 
-    return result.rows[0];
-  };
+  return result.rows[0];
+};
 
-
-
-
-
-export const updateHolding =
-  async (
-    id: string,
-    payload: UpdateInvestorHoldingDTO
-  ) => {
-
-    const query = `
+export const updateHolding = async (
+  id: string,
+  payload: UpdateInvestorHoldingDTO,
+) => {
+  const query = `
       UPDATE investor_fund_holdings
       SET
         units = COALESCE($1, units),
@@ -141,52 +100,34 @@ export const updateHolding =
       RETURNING *;
     `;
 
-    const values = [
-      payload.units,
-      payload.average_nav,
-      payload.invested_amount,
-      payload.current_value,
-      payload.profit_loss,
-      id,
-    ];
+  const values = [
+    payload.units,
+    payload.average_nav,
+    payload.invested_amount,
+    payload.current_value,
+    payload.profit_loss,
+    id,
+  ];
 
-    const result = await pool.query(
-      query,
-      values
-    );
+  const result = await pool.query(query, values);
 
-    return result.rows[0];
-  };
+  return result.rows[0];
+};
 
-
-
-
-
-export const deleteHolding =
-  async (id: string) => {
-
-    const query = `
+export const deleteHolding = async (id: string) => {
+  const query = `
       DELETE FROM investor_fund_holdings
       WHERE id = $1
       RETURNING *;
     `;
 
-    const result = await pool.query(
-      query,
-      [id]
-    );
+  const result = await pool.query(query, [id]);
 
-    return result.rows[0];
-  };
+  return result.rows[0];
+};
 
-
-
-
-
-export const getInvestorPortfolioSummary =
-  async (investorId: string) => {
-
-    const query = `
+export const getInvestorPortfolioSummary = async (investorId: string) => {
+  const query = `
       SELECT
         investor_id,
         COALESCE(SUM(invested_amount), 0)
@@ -203,10 +144,7 @@ export const getInvestorPortfolioSummary =
       GROUP BY investor_id;
     `;
 
-    const result = await pool.query(
-      query,
-      [investorId]
-    );
+  const result = await pool.query(query, [investorId]);
 
-    return result.rows[0];
-  };
+  return result.rows[0];
+};

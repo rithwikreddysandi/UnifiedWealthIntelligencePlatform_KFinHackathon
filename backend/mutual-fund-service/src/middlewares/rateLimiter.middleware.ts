@@ -1,23 +1,16 @@
-import rateLimit
-  from "express-rate-limit";
+import rateLimit from "express-rate-limit";
 
+export const rateLimiterMiddleware = rateLimit({
+  windowMs: 15 * 60 * 1000,
 
+  max: 100,
 
-export const rateLimiterMiddleware =
-  rateLimit({
+  message: {
+    success: false,
+    message: "Too many requests, please try again later",
+  },
 
-    windowMs:
-      15 * 60 * 1000,
+  standardHeaders: true,
 
-    max: 100,
-
-    message: {
-      success: false,
-      message:
-        "Too many requests, please try again later",
-    },
-
-    standardHeaders: true,
-
-    legacyHeaders: false,
-  });
+  legacyHeaders: false,
+});

@@ -7,12 +7,7 @@ import {
   UpdateSipTransactionDTO,
 } from "../models/sipAccount.model.js";
 
-
-
-export const createSip = async (
-  payload: CreateSipAccountDTO
-) => {
-
+export const createSip = async (payload: CreateSipAccountDTO) => {
   const query = `
     INSERT INTO sip_accounts (
       investor_id,
@@ -34,20 +29,12 @@ export const createSip = async (
     payload.start_date,
   ];
 
-  const result = await pool.query(
-    query,
-    values
-  );
+  const result = await pool.query(query, values);
 
   return result.rows[0];
 };
 
-
-
-
-
 export const getAllSips = async () => {
-
   const query = `
     SELECT *
     FROM sip_accounts
@@ -59,36 +46,19 @@ export const getAllSips = async () => {
   return result.rows;
 };
 
-
-
-
-
-export const getSipById = async (
-  id: string
-) => {
-
+export const getSipById = async (id: string) => {
   const query = `
     SELECT *
     FROM sip_accounts
     WHERE id = $1;
   `;
 
-  const result = await pool.query(
-    query,
-    [id]
-  );
+  const result = await pool.query(query, [id]);
 
   return result.rows[0];
 };
 
-
-
-
-
-export const getInvestorSips = async (
-  investorId: string
-) => {
-
+export const getInvestorSips = async (investorId: string) => {
   const query = `
     SELECT *
     FROM sip_accounts
@@ -96,23 +66,12 @@ export const getInvestorSips = async (
     ORDER BY created_at DESC;
   `;
 
-  const result = await pool.query(
-    query,
-    [investorId]
-  );
+  const result = await pool.query(query, [investorId]);
 
   return result.rows;
 };
 
-
-
-
-
-export const updateSip = async (
-  id: string,
-  payload: UpdateSipAccountDTO
-) => {
-
+export const updateSip = async (id: string, payload: UpdateSipAccountDTO) => {
   const query = `
     UPDATE sip_accounts
     SET
@@ -133,44 +92,26 @@ export const updateSip = async (
     id,
   ];
 
-  const result = await pool.query(
-    query,
-    values
-  );
+  const result = await pool.query(query, values);
 
   return result.rows[0];
 };
 
-
-
-
-
-export const deleteSip = async (
-  id: string
-) => {
-
+export const deleteSip = async (id: string) => {
   const query = `
     DELETE FROM sip_accounts
     WHERE id = $1
     RETURNING *;
   `;
 
-  const result = await pool.query(
-    query,
-    [id]
-  );
+  const result = await pool.query(query, [id]);
 
   return result.rows[0];
 };
 
-
-
-
-
 export const createSipTransaction = async (
-  payload: CreateSipTransactionDTO
+  payload: CreateSipTransactionDTO,
 ) => {
-
   const query = `
     INSERT INTO sip_transactions (
       sip_id,
@@ -195,22 +136,12 @@ export const createSipTransaction = async (
     payload.failure_reason,
   ];
 
-  const result = await pool.query(
-    query,
-    values
-  );
+  const result = await pool.query(query, values);
 
   return result.rows[0];
 };
 
-
-
-
-
-export const getSipTransactions = async (
-  sipId: string
-) => {
-
+export const getSipTransactions = async (sipId: string) => {
   const query = `
     SELECT *
     FROM sip_transactions
@@ -218,23 +149,15 @@ export const getSipTransactions = async (
     ORDER BY created_at DESC;
   `;
 
-  const result = await pool.query(
-    query,
-    [sipId]
-  );
+  const result = await pool.query(query, [sipId]);
 
   return result.rows;
 };
 
-
-
-
-
 export const updateSipTransaction = async (
   id: string,
-  payload: UpdateSipTransactionDTO
+  payload: UpdateSipTransactionDTO,
 ) => {
-
   const query = `
     UPDATE sip_transactions
     SET
@@ -256,29 +179,20 @@ export const updateSipTransaction = async (
     id,
   ];
 
-  const result = await pool.query(
-    query,
-    values
-  );
+  const result = await pool.query(query, values);
 
   return result.rows[0];
 };
 
-
-
-
-
-export const getFailedSipTransactions =
-  async () => {
-
-    const query = `
+export const getFailedSipTransactions = async () => {
+  const query = `
       SELECT *
       FROM sip_transactions
       WHERE transaction_status = 'FAILED'
       ORDER BY created_at DESC;
     `;
 
-    const result = await pool.query(query);
+  const result = await pool.query(query);
 
-    return result.rows;
-  };
+  return result.rows;
+};

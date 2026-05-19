@@ -1,111 +1,58 @@
-import { Router }
-  from "express";
+import { Router } from "express";
 
-import * as sipController
-  from "../controllers/sip.controller.js";
+import * as sipController from "../controllers/sip.controller.js";
 
-import {
-  authMiddleware,
-} from "../middlewares/auth.middleware.js";
+import { authMiddleware } from "../middlewares/auth.middleware.js";
 
-import {
-  validationMiddleware,
-} from "../middlewares/validation.middleware.js";
+import { validationMiddleware } from "../middlewares/validation.middleware.js";
 
 import {
   createSipValidator,
   updateSipValidator,
 } from "../validators/sip.validator.js";
 
-
-
 const router = Router();
 
-
-
-// CREATE SIP
 router.post(
   "/",
   authMiddleware,
   createSipValidator,
   validationMiddleware,
-  sipController.createSip
+  sipController.createSip,
 );
 
+router.get("/", authMiddleware, sipController.getAllSips);
 
+router.get("/:id", authMiddleware, sipController.getSipById);
 
-// GET ALL SIPS
-router.get(
-  "/",
-  authMiddleware,
-  sipController.getAllSips
-);
-
-
-
-// GET SIP BY ID
-router.get(
-  "/:id",
-  authMiddleware,
-  sipController.getSipById
-);
-
-
-
-// GET INVESTOR SIPS
 router.get(
   "/investor/:investorId",
   authMiddleware,
-  sipController.getInvestorSips
+  sipController.getInvestorSips,
 );
 
-
-
-// UPDATE SIP
 router.put(
   "/:id",
   authMiddleware,
   updateSipValidator,
   validationMiddleware,
-  sipController.updateSip
+  sipController.updateSip,
 );
 
+router.delete("/:id", authMiddleware, sipController.deleteSip);
 
+router.post("/execute/:id", authMiddleware, sipController.executeSip);
 
-// DELETE SIP
-router.delete(
-  "/:id",
-  authMiddleware,
-  sipController.deleteSip
-);
-
-
-
-// EXECUTE SIP
-router.post(
-  "/execute/:id",
-  authMiddleware,
-  sipController.executeSip
-);
-
-
-
-// GET SIP TRANSACTIONS
 router.get(
   "/transactions/:sipId",
   authMiddleware,
-  sipController.getSipTransactions
+  sipController.getSipTransactions,
 );
 
-
-
-// GET FAILED SIP TRANSACTIONS
 router.get(
   "/failed/transactions",
   authMiddleware,
-  sipController.getFailedSipTransactions
+  sipController.getFailedSipTransactions,
 );
-
-
 
 export default router;

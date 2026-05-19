@@ -9,12 +9,7 @@ export interface PaginationResult {
   page: number;
 }
 
-
-
-export const getPagination = (
-  query: PaginationQuery
-): PaginationResult => {
-
+export const getPagination = (query: PaginationQuery): PaginationResult => {
   const page = Number(query.page) || 1;
 
   const limit = Number(query.limit) || 10;

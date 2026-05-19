@@ -1,5 +1,4 @@
 export interface ApiLog {
-
   id: string;
 
   server_name: string;
@@ -16,11 +15,8 @@ export interface ApiLog {
 
   created_at?: Date;
 }
-
-
 
 export interface CreateApiLogDTO {
-
   server_name: string;
 
   endpoint: string;
@@ -34,10 +30,7 @@ export interface CreateApiLogDTO {
   error_message?: string;
 }
 
-
-
 export interface ApiLogDetails {
-
   id: string;
 
   server_name: string;
@@ -55,10 +48,7 @@ export interface ApiLogDetails {
   created_at?: Date;
 }
 
-
-
 export interface ApiLogSummary {
-
   total_requests: number;
 
   successful_requests: number;
@@ -68,10 +58,7 @@ export interface ApiLogSummary {
   average_response_time: number;
 }
 
-
-
 export interface EndpointAnalytics {
-
   endpoint: string;
 
   total_hits: number;
@@ -83,10 +70,7 @@ export interface EndpointAnalytics {
   failure_count: number;
 }
 
-
-
 export interface ErrorAnalytics {
-
   endpoint: string;
 
   status_code: number;

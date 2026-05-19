@@ -5,16 +5,12 @@ export enum SipFrequency {
   QUARTERLY = "QUARTERLY",
 }
 
-
-
 export enum SipStatus {
   ACTIVE = "ACTIVE",
   PAUSED = "PAUSED",
   FAILED = "FAILED",
   CLOSED = "CLOSED",
 }
-
-
 
 export enum MfTransactionType {
   PURCHASE = "PURCHASE",
@@ -24,8 +20,6 @@ export enum MfTransactionType {
   SWP = "SWP",
 }
 
-
-
 export enum MandateStatus {
   PENDING = "PENDING",
   APPROVED = "APPROVED",
@@ -33,15 +27,11 @@ export enum MandateStatus {
   EXPIRED = "EXPIRED",
 }
 
-
-
 export enum InvestorStatus {
   ACTIVE = "ACTIVE",
   INACTIVE = "INACTIVE",
   BLOCKED = "BLOCKED",
 }
-
-
 
 export enum AlertSeverity {
   LOW = "LOW",
@@ -51,15 +41,11 @@ export enum AlertSeverity {
   IN_PROGRESS = "IN_PROGRESS",
 }
 
-
-
 export enum AlertStatus {
   OPEN = "OPEN",
   RESOLVED = "RESOLVED",
   DISMISSED = "DISMISSED",
 }
-
-
 
 export enum OrderStatus {
   PENDING = "PENDING",

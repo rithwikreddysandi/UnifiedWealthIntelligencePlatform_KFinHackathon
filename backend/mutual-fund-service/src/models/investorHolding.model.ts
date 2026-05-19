@@ -1,5 +1,4 @@
 export interface InvestorHolding {
-
   id: string;
 
   investor_id: string;
@@ -21,10 +20,7 @@ export interface InvestorHolding {
   updated_at?: Date;
 }
 
-
-
 export interface CreateInvestorHoldingDTO {
-
   investor_id: string;
 
   fund_id: string;
@@ -40,10 +36,7 @@ export interface CreateInvestorHoldingDTO {
   profit_loss: number;
 }
 
-
-
 export interface UpdateInvestorHoldingDTO {
-
   units?: number;
 
   average_nav?: number;
@@ -55,10 +48,7 @@ export interface UpdateInvestorHoldingDTO {
   profit_loss?: number;
 }
 
-
-
 export interface InvestorPortfolioSummary {
-
   investor_id: string;
 
   total_invested_amount: number;
@@ -70,10 +60,7 @@ export interface InvestorPortfolioSummary {
   total_return_percentage: number;
 }
 
-
-
 export interface FundHoldingDetails {
-
   fund_id: string;
 
   fund_name: string;

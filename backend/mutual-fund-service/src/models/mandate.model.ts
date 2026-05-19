@@ -1,9 +1,6 @@
 import { MandateStatus } from "../utils/enums.js";
 
-
-
 export interface Mandate {
-
   id: string;
 
   investor_id: string;
@@ -21,10 +18,7 @@ export interface Mandate {
   created_at?: Date;
 }
 
-
-
 export interface CreateMandateDTO {
-
   investor_id: string;
 
   bank_account_id: string;
@@ -36,10 +30,7 @@ export interface CreateMandateDTO {
   expiry_date?: Date;
 }
 
-
-
 export interface UpdateMandateDTO {
-
   maximum_amount?: number;
 
   status?: MandateStatus;
@@ -47,10 +38,7 @@ export interface UpdateMandateDTO {
   expiry_date?: Date;
 }
 
-
-
 export interface MandateDetails {
-
   id: string;
 
   investor_id: string;
@@ -74,10 +62,7 @@ export interface MandateDetails {
   created_at?: Date;
 }
 
-
-
 export interface InvestorMandateSummary {
-
   investor_id: string;
 
   total_mandates: number;
@@ -91,10 +76,7 @@ export interface InvestorMandateSummary {
   expired_mandates: number;
 }
 
-
-
 export interface MandateValidationResult {
-
   is_valid: boolean;
 
   status: MandateStatus;
