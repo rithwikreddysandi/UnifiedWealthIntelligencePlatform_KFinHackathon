@@ -10,10 +10,7 @@ import * as transactionRepository from "../repositories/transaction.repository.j
 
 import { redis } from "../config/redis.js";
 
-import {
-  CACHE_EXPIRY,
-  CACHE_KEYS,
-} from "../utils/constants.js";
+import { CACHE_EXPIRY, CACHE_KEYS } from "../utils/constants.js";
 
 import {
   calculateUnits,
@@ -34,358 +31,172 @@ import {
 
 import { OrderStatus, MfTransactionType } from "../utils/enums.js";
 
-
-
-export const createSip = async (
-  payload: CreateSipAccountDTO
-) => {
-
-  // validate mandate
-  const validMandate =
-    await mandateRepository.validateMandate(
-      payload.investor_id,
-      payload.sip_amount
-    );
+export const createSip = async (payload: CreateSipAccountDTO) => {
+  const validMandate = await mandateRepository.validateMandate(
+    payload.investor_id,
+    payload.sip_amount,
+  );
 
   if (!validMandate) {
-    throw new Error(
-      "No valid approved mandate found"
-    );
+    throw new Error("No valid approved mandate found");
   }
 
-  const sip =
-    await sipRepository.createSip(
-      payload
-    );
+  const sip = await sipRepository.createSip(payload);
 
   return sip;
 };
 
-
-
-
-
-export const getAllSips =
-  async () => {
-
-    return await sipRepository.getAllSips();
-  };
-
-
-
-
-
-export const getSipById =
-  async (id: string) => {
-
-    return await sipRepository.getSipById(
-      id
-    );
-  };
-
-
-
-
-
-export const getInvestorSips =
-  async (
-    investorId: string
-  ) => {
-
-    return await sipRepository.getInvestorSips(
-      investorId
-    );
-  };
-
-
-
-
-
-export const updateSip =
-  async (
-    id: string,
-    payload: UpdateSipAccountDTO
-  ) => {
-
-    const existingSip =
-      await sipRepository.getSipById(id);
-
-    if (!existingSip) {
-      throw new Error(
-        "SIP not found"
-      );
-    }
-
-    return await sipRepository.updateSip(
-      id,
-      payload
-    );
-  };
-
-
-
-
-
-export const deleteSip =
-  async (id: string) => {
-
-    const existingSip =
-      await sipRepository.getSipById(id);
-
-    if (!existingSip) {
-      throw new Error(
-        "SIP not found"
-      );
-    }
-
-    return await sipRepository.deleteSip(
-      id
-    );
-  };
-
-
-
-
-
-export const createSipTransaction =
-  async (
-    payload: CreateSipTransactionDTO
-  ) => {
-
-    return await sipRepository
-      .createSipTransaction(payload);
-  };
-
-
-
-
-
-export const getSipTransactions =
-  async (sipId: string) => {
-
-    return await sipRepository
-      .getSipTransactions(sipId);
-  };
-
-
-
-
-
-export const updateSipTransaction =
-  async (
-    id: string,
-    payload: UpdateSipTransactionDTO
-  ) => {
-
-    return await sipRepository
-      .updateSipTransaction(
-        id,
-        payload
-      );
-  };
-
-
-
-
-
-export const executeSip =
-  async (sipId: string) => {
-
-    // get sip
-    const sip =
-      await sipRepository.getSipById(
-        sipId
-      );
-
-    if (!sip) {
-      throw new Error(
-        "SIP not found"
-      );
-    }
-
-    // validate mandate
-    const validMandate =
-      await mandateRepository.validateMandate(
-        sip.investor_id,
-        sip.sip_amount
-      );
-
-    if (!validMandate) {
-
-      await sipRepository
-        .createSipTransaction({
-          sip_id: sip.id,
-          amount: sip.sip_amount,
-          transaction_status:
-            OrderStatus.FAILED,
-          failure_reason:
-            "Mandate validation failed",
-        });
-
-      throw new Error(
-        "Mandate validation failed"
-      );
-    }
-
-    // get fund
-    const fund =
-      await fundRepository.getFundById(
-        sip.fund_id
-      );
-
-    if (!fund) {
-      throw new Error(
-        "Fund not found"
-      );
-    }
-
-    const nav = Number(
-      fund.current_nav
-    );
-
-    // calculate units
-    const units =
-      calculateUnits(
-        sip.sip_amount,
-        nav
-      );
-
-    // create sip transaction
-    const sipTransaction =
-      await sipRepository
-        .createSipTransaction({
-          sip_id: sip.id,
-          amount: sip.sip_amount,
-          nav,
-          units_allocated: units,
-          debit_date: new Date(),
-          transaction_status:
-            OrderStatus.SUCCESS,
-        });
-
-    // create fund transaction
-    await transactionRepository
-      .createTransaction({
-        investor_id:
-          sip.investor_id,
-        fund_id: sip.fund_id,
-        transaction_type:  MfTransactionType.PURCHASE,
-        amount: sip.sip_amount,
-        units,
-        nav,
-      });
-
-    // check holding
-    const existingHolding =
-      await holdingRepository
-        .getHoldingByInvestorAndFund(
-          sip.investor_id,
-          sip.fund_id
-        );
-
-    if (existingHolding) {
-
-      const updatedUnits =
-        Number(
-          existingHolding.units
-        ) + Number(units);
-
-      const updatedInvestment =
-        Number(
-          existingHolding.invested_amount
-        ) + Number(sip.sip_amount);
-
-      const averageNav =
-        updatedInvestment /
-        updatedUnits;
-
-      const currentValue =
-        calculateCurrentValue(
-          updatedUnits,
-          nav
-        );
-
-      const profitLoss =
-        calculateProfitLoss(
-          updatedInvestment,
-          currentValue
-        );
-
-      await holdingRepository
-        .updateHolding(
-          existingHolding.id,
-          {
-            units: updatedUnits,
-            average_nav: averageNav,
-            invested_amount:
-              updatedInvestment,
-            current_value:
-              currentValue,
-            profit_loss:
-              profitLoss,
-          }
-        );
-
-    } else {
-
-      const currentValue =
-        calculateCurrentValue(
-          units,
-          nav
-        );
-
-      const profitLoss =
-        calculateProfitLoss(
-          sip.sip_amount,
-          currentValue
-        );
-
-      await holdingRepository
-        .createHolding({
-          investor_id:
-            sip.investor_id,
-          fund_id: sip.fund_id,
-          units,
-          average_nav: nav,
-          invested_amount:
-            sip.sip_amount,
-          current_value:
-            currentValue,
-          profit_loss:
-            profitLoss,
-        });
-    }
-
-    // update next SIP date
-    const nextSipDate =
-      getNextSipDate(
-        new Date(),
-        sip.frequency
-      );
-
-    await sipRepository.updateSip(
-      sip.id,
-      {
-        next_installment_date:
-          nextSipDate,
-      }
-    );
-
-    // clear holdings cache
-    await redis.del(
-      `${CACHE_KEYS.INVESTOR_HOLDINGS}:${sip.investor_id}`
-    );
-
-    return sipTransaction;
-  };
-
-
-
-
-
-export const getFailedSipTransactions =
-  async () => {
-
-    return await sipRepository
-      .getFailedSipTransactions();
-  };
+export const getAllSips = async () => {
+  return await sipRepository.getAllSips();
+};
+
+export const getSipById = async (id: string) => {
+  return await sipRepository.getSipById(id);
+};
+
+export const getInvestorSips = async (investorId: string) => {
+  return await sipRepository.getInvestorSips(investorId);
+};
+
+export const updateSip = async (id: string, payload: UpdateSipAccountDTO) => {
+  const existingSip = await sipRepository.getSipById(id);
+
+  if (!existingSip) {
+    throw new Error("SIP not found");
+  }
+
+  return await sipRepository.updateSip(id, payload);
+};
+
+export const deleteSip = async (id: string) => {
+  const existingSip = await sipRepository.getSipById(id);
+
+  if (!existingSip) {
+    throw new Error("SIP not found");
+  }
+
+  return await sipRepository.deleteSip(id);
+};
+
+export const createSipTransaction = async (
+  payload: CreateSipTransactionDTO,
+) => {
+  return await sipRepository.createSipTransaction(payload);
+};
+
+export const getSipTransactions = async (sipId: string) => {
+  return await sipRepository.getSipTransactions(sipId);
+};
+
+export const updateSipTransaction = async (
+  id: string,
+  payload: UpdateSipTransactionDTO,
+) => {
+  return await sipRepository.updateSipTransaction(id, payload);
+};
+
+export const executeSip = async (sipId: string) => {
+  const sip = await sipRepository.getSipById(sipId);
+
+  if (!sip) {
+    throw new Error("SIP not found");
+  }
+
+  const validMandate = await mandateRepository.validateMandate(
+    sip.investor_id,
+    sip.sip_amount,
+  );
+
+  if (!validMandate) {
+    await sipRepository.createSipTransaction({
+      sip_id: sip.id,
+      amount: sip.sip_amount,
+      transaction_status: OrderStatus.FAILED,
+      failure_reason: "Mandate validation failed",
+    });
+
+    throw new Error("Mandate validation failed");
+  }
+
+  const fund = await fundRepository.getFundById(sip.fund_id);
+
+  if (!fund) {
+    throw new Error("Fund not found");
+  }
+
+  const nav = Number(fund.current_nav);
+
+  const units = calculateUnits(sip.sip_amount, nav);
+
+  const sipTransaction = await sipRepository.createSipTransaction({
+    sip_id: sip.id,
+    amount: sip.sip_amount,
+    nav,
+    units_allocated: units,
+    debit_date: new Date(),
+    transaction_status: OrderStatus.SUCCESS,
+  });
+
+  await transactionRepository.createTransaction({
+    investor_id: sip.investor_id,
+    fund_id: sip.fund_id,
+    transaction_type: MfTransactionType.PURCHASE,
+    amount: sip.sip_amount,
+    units,
+    nav,
+  });
+
+  const existingHolding = await holdingRepository.getHoldingByInvestorAndFund(
+    sip.investor_id,
+    sip.fund_id,
+  );
+
+  if (existingHolding) {
+    const updatedUnits = Number(existingHolding.units) + Number(units);
+
+    const updatedInvestment =
+      Number(existingHolding.invested_amount) + Number(sip.sip_amount);
+
+    const averageNav = updatedInvestment / updatedUnits;
+
+    const currentValue = calculateCurrentValue(updatedUnits, nav);
+
+    const profitLoss = calculateProfitLoss(updatedInvestment, currentValue);
+
+    await holdingRepository.updateHolding(existingHolding.id, {
+      units: updatedUnits,
+      average_nav: averageNav,
+      invested_amount: updatedInvestment,
+      current_value: currentValue,
+      profit_loss: profitLoss,
+    });
+  } else {
+    const currentValue = calculateCurrentValue(units, nav);
+
+    const profitLoss = calculateProfitLoss(sip.sip_amount, currentValue);
+
+    await holdingRepository.createHolding({
+      investor_id: sip.investor_id,
+      fund_id: sip.fund_id,
+      units,
+      average_nav: nav,
+      invested_amount: sip.sip_amount,
+      current_value: currentValue,
+      profit_loss: profitLoss,
+    });
+  }
+
+  const nextSipDate = getNextSipDate(new Date(), sip.frequency);
+
+  await sipRepository.updateSip(sip.id, {
+    next_installment_date: nextSipDate,
+  });
+
+  await redis.del(`${CACHE_KEYS.INVESTOR_HOLDINGS}:${sip.investor_id}`);
+
+  return sipTransaction;
+};
+
+export const getFailedSipTransactions = async () => {
+  return await sipRepository.getFailedSipTransactions();
+};

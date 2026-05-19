@@ -1,24 +1,11 @@
-/*
-|--------------------------------------------------------------------------
-| COMMON DATABASE TYPES
-|--------------------------------------------------------------------------
-*/
-
-
 
 export interface PaginationQuery {
-
   page?: number;
 
   limit?: number;
 }
 
-
-
-
-
 export interface PaginationResult<T> {
-
   data: T[];
 
   total: number;
@@ -30,12 +17,7 @@ export interface PaginationResult<T> {
   totalPages: number;
 }
 
-
-
-
-
 export interface BaseEntity {
-
   id: string;
 
   created_at?: Date;
@@ -44,19 +26,7 @@ export interface BaseEntity {
 }
 
 
-
-
-
-/*
-|--------------------------------------------------------------------------
-| DATABASE RESPONSE TYPES
-|--------------------------------------------------------------------------
-*/
-
-
-
 export interface DatabaseResponse<T> {
-
   success: boolean;
 
   data?: T;
@@ -64,61 +34,27 @@ export interface DatabaseResponse<T> {
   error?: any;
 }
 
-
-
-
-
 export interface QueryResult<T> {
-
   rows: T[];
 
   rowCount: number;
 }
 
 
-
-
-
-/*
-|--------------------------------------------------------------------------
-| FILTER TYPES
-|--------------------------------------------------------------------------
-*/
-
-
-
 export interface DateRangeFilter {
-
   startDate?: Date;
 
   endDate?: Date;
 }
 
-
-
-
-
 export interface SortQuery {
-
   sortBy?: string;
 
   sortOrder?: "ASC" | "DESC";
 }
 
 
-
-
-
-/*
-|--------------------------------------------------------------------------
-| AUDIT TYPES
-|--------------------------------------------------------------------------
-*/
-
-
-
 export interface AuditMetadata {
-
   created_by?: string;
 
   updated_by?: string;
@@ -127,19 +63,7 @@ export interface AuditMetadata {
 }
 
 
-
-
-
-/*
-|--------------------------------------------------------------------------
-| API LOG TYPES
-|--------------------------------------------------------------------------
-*/
-
-
-
 export interface ApiMetrics {
-
   endpoint: string;
 
   request_count: number;
@@ -150,19 +74,7 @@ export interface ApiMetrics {
 }
 
 
-
-
-
-/*
-|--------------------------------------------------------------------------
-| FINANCIAL TYPES
-|--------------------------------------------------------------------------
-*/
-
-
-
 export interface PortfolioSummary {
-
   investor_id: string;
 
   total_investment: number;
@@ -174,12 +86,7 @@ export interface PortfolioSummary {
   total_returns_percentage: number;
 }
 
-
-
-
-
 export interface NavData {
-
   fund_id: string;
 
   nav: number;
@@ -187,12 +94,7 @@ export interface NavData {
   nav_date: Date;
 }
 
-
-
-
-
 export interface SipExecutionResult {
-
   sip_id: string;
 
   transaction_id?: string;

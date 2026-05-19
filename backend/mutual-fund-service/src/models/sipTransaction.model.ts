@@ -1,9 +1,6 @@
 import { OrderStatus } from "../utils/enums.js";
 
-
-
 export interface SipTransaction {
-
   id: string;
 
   sip_id: string;
@@ -23,10 +20,7 @@ export interface SipTransaction {
   created_at?: Date;
 }
 
-
-
 export interface CreateSipTransactionDTO {
-
   sip_id: string;
 
   amount: number;
@@ -42,10 +36,7 @@ export interface CreateSipTransactionDTO {
   failure_reason?: string;
 }
 
-
-
 export interface UpdateSipTransactionDTO {
-
   nav?: number;
 
   units_allocated?: number;
@@ -57,10 +48,7 @@ export interface UpdateSipTransactionDTO {
   failure_reason?: string;
 }
 
-
-
 export interface SipTransactionDetails {
-
   id: string;
 
   sip_id: string;
@@ -88,10 +76,7 @@ export interface SipTransactionDetails {
   created_at?: Date;
 }
 
-
-
 export interface FailedSipTransaction {
-
   id: string;
 
   sip_id: string;
@@ -107,10 +92,7 @@ export interface FailedSipTransaction {
   debit_date?: Date;
 }
 
-
-
 export interface SipExecutionResult {
-
   success: boolean;
 
   sip_transaction_id?: string;

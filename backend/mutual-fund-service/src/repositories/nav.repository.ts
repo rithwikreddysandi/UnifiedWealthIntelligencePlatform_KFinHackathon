@@ -5,14 +5,8 @@ import {
   UpdateNavHistoryDTO,
 } from "../models/navHistory.model.js";
 
-
-
-export const createNavHistory =
-  async (
-    payload: CreateNavHistoryDTO
-  ) => {
-
-    const query = `
+export const createNavHistory = async (payload: CreateNavHistoryDTO) => {
+  const query = `
       INSERT INTO nav_history (
         fund_id,
         nav,
@@ -22,71 +16,40 @@ export const createNavHistory =
       RETURNING *;
     `;
 
-    const values = [
-      payload.fund_id,
-      payload.nav,
-      payload.nav_date,
-    ];
+  const values = [payload.fund_id, payload.nav, payload.nav_date];
 
-    const result = await pool.query(
-      query,
-      values
-    );
+  const result = await pool.query(query, values);
 
-    return result.rows[0];
-  };
+  return result.rows[0];
+};
 
-
-
-
-
-export const getNavHistoryById =
-  async (id: string) => {
-
-    const query = `
+export const getNavHistoryById = async (id: string) => {
+  const query = `
       SELECT *
       FROM nav_history
       WHERE id = $1;
     `;
 
-    const result = await pool.query(
-      query,
-      [id]
-    );
+  const result = await pool.query(query, [id]);
 
-    return result.rows[0];
-  };
+  return result.rows[0];
+};
 
-
-
-
-
-export const getFundNavHistory =
-  async (fundId: string) => {
-
-    const query = `
+export const getFundNavHistory = async (fundId: string) => {
+  const query = `
       SELECT *
       FROM nav_history
       WHERE fund_id = $1
       ORDER BY nav_date DESC;
     `;
 
-    const result = await pool.query(
-      query,
-      [fundId]
-    );
+  const result = await pool.query(query, [fundId]);
 
-    return result.rows;
-  };
+  return result.rows;
+};
 
-
-
-
-
-export const getLatestNav =
-  async (fundId: string) => {
-
-    const query = `
+export const getLatestNav = async (fundId: string) => {
+  const query = `
       SELECT *
       FROM nav_history
       WHERE fund_id = $1
@@ -94,25 +57,16 @@ export const getLatestNav =
       LIMIT 1;
     `;
 
-    const result = await pool.query(
-      query,
-      [fundId]
-    );
+  const result = await pool.query(query, [fundId]);
 
-    return result.rows[0];
-  };
+  return result.rows[0];
+};
 
-
-
-
-
-export const updateNavHistory =
-  async (
-    id: string,
-    payload: UpdateNavHistoryDTO
-  ) => {
-
-    const query = `
+export const updateNavHistory = async (
+  id: string,
+  payload: UpdateNavHistoryDTO,
+) => {
+  const query = `
       UPDATE nav_history
       SET
         nav = COALESCE($1, nav),
@@ -121,74 +75,40 @@ export const updateNavHistory =
       RETURNING *;
     `;
 
-    const values = [
-      payload.nav,
-      payload.nav_date,
-      id,
-    ];
+  const values = [payload.nav, payload.nav_date, id];
 
-    const result = await pool.query(
-      query,
-      values
-    );
+  const result = await pool.query(query, values);
 
-    return result.rows[0];
-  };
+  return result.rows[0];
+};
 
-
-
-
-
-export const deleteNavHistory =
-  async (id: string) => {
-
-    const query = `
+export const deleteNavHistory = async (id: string) => {
+  const query = `
       DELETE FROM nav_history
       WHERE id = $1
       RETURNING *;
     `;
 
-    const result = await pool.query(
-      query,
-      [id]
-    );
+  const result = await pool.query(query, [id]);
 
-    return result.rows[0];
-  };
+  return result.rows[0];
+};
 
-
-
-
-
-export const getNavByDate =
-  async (
-    fundId: string,
-    navDate: Date
-  ) => {
-
-    const query = `
+export const getNavByDate = async (fundId: string, navDate: Date) => {
+  const query = `
       SELECT *
       FROM nav_history
       WHERE fund_id = $1
       AND nav_date = $2;
     `;
 
-    const result = await pool.query(
-      query,
-      [fundId, navDate]
-    );
+  const result = await pool.query(query, [fundId, navDate]);
 
-    return result.rows[0];
-  };
+  return result.rows[0];
+};
 
-
-
-
-
-export const getLatestNavs =
-  async () => {
-
-    const query = `
+export const getLatestNavs = async () => {
+  const query = `
       SELECT DISTINCT ON (nh.fund_id)
         nh.*,
         mf.fund_name,
@@ -199,7 +119,7 @@ export const getLatestNavs =
       ORDER BY nh.fund_id, nh.nav_date DESC;
     `;
 
-    const result = await pool.query(query);
+  const result = await pool.query(query);
 
-    return result.rows;
-  };
+  return result.rows;
+};

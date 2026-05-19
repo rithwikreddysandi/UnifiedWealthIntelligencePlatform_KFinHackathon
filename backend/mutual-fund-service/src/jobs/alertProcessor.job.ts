@@ -1,134 +1,49 @@
 import cron from "node-cron";
 
-import * as alertRepository
-  from "../repositories/alert.repository.js";
+import * as alertRepository from "../repositories/alert.repository.js";
 
-import {
-  AlertSeverity,
-  AlertStatus,
-} from "../utils/enums.js";
+import { AlertSeverity, AlertStatus } from "../utils/enums.js";
 
 
+export const alertProcessorJob = cron.schedule("*/15 * * * *", async () => {
+  console.log("Running Alert Processor Job...");
 
-/*
-|--------------------------------------------------------------------------
-| ALERT PROCESSOR JOB
-|--------------------------------------------------------------------------
-|
-| Processes alerts
-| every 15 minutes
-|
-*/
+  try {
+    const openAlerts = await alertRepository.getOpenAlerts();
 
+    const criticalAlerts = openAlerts.filter(
+      (alert: any) => alert.severity === AlertSeverity.CRITICAL,
+    );
 
-
-export const alertProcessorJob =
-  cron.schedule(
-    "*/15 * * * *",
-    async () => {
-
-      console.log(
-        "Running Alert Processor Job..."
-      );
-
+    for (const alert of criticalAlerts) {
       try {
 
-        const openAlerts =
-          await alertRepository
-            .getOpenAlerts();
+        console.log(`CRITICAL ALERT ESCALATION: ${alert.message}`);
 
-        const criticalAlerts =
-          openAlerts.filter(
-            (alert: any) =>
-              alert.severity ===
-              AlertSeverity.CRITICAL
-          );
-
-
-
-        for (
-          const alert of
-          criticalAlerts
-        ) {
-
-          try {
-
-            /*
-            |--------------------------------------------------------------------------
-            | MOCK ALERT ESCALATION
-            |--------------------------------------------------------------------------
-            |
-            | Real systems:
-            | - email notifications
-            | - slack alerts
-            | - pagerduty
-            | - ops escalation
-            |
-            */
-
-            console.log(
-              `CRITICAL ALERT ESCALATION: ${alert.message}`
-            );
-
-
-
-            // auto update alert status
-            await alertRepository
-              .updateAlert(
-                alert.id,
-                {
-                  status:
-                    AlertStatus.IN_PROGRESS,
-                }
-              );
-
-          } catch (error) {
-
-            console.error(
-              `Failed To Process Alert: ${alert.id}`,
-              error
-            );
-          }
-        }
-
-        console.log(
-          `Alert Processor Completed. Processed ${criticalAlerts.length} Critical Alerts`
-        );
-
+        await alertRepository.updateAlert(alert.id, {
+          status: AlertStatus.IN_PROGRESS,
+        });
       } catch (error) {
-
-        console.error(
-          "Alert Processor Job Error:",
-          error
-        );
+        console.error(`Failed To Process Alert: ${alert.id}`, error);
       }
     }
-  );
-
-
-
-
-
-export const startAlertProcessorJob =
-  () => {
-
-    alertProcessorJob.start();
 
     console.log(
-      "Alert Processor Job Started"
+      `Alert Processor Completed. Processed ${criticalAlerts.length} Critical Alerts`,
     );
-  };
+  } catch (error) {
+    console.error("Alert Processor Job Error:", error);
+  }
+});
 
+export const startAlertProcessorJob = () => {
+  alertProcessorJob.start();
 
+  console.log("Alert Processor Job Started");
+};
 
+export const stopAlertProcessorJob = () => {
+  alertProcessorJob.stop();
 
-
-export const stopAlertProcessorJob =
-  () => {
-
-    alertProcessorJob.stop();
-
-    console.log(
-      "Alert Processor Job Stopped"
-    );
-  };
+  console.log("Alert Processor Job Stopped");
+};

@@ -1,12 +1,6 @@
-import {
-  MfTransactionType,
-  OrderStatus,
-} from "../utils/enums.js";
-
-
+import { MfTransactionType, OrderStatus } from "../utils/enums.js";
 
 export interface FundTransaction {
-
   id: string;
 
   investor_id: string;
@@ -28,10 +22,7 @@ export interface FundTransaction {
   created_at?: Date;
 }
 
-
-
 export interface CreateFundTransactionDTO {
-
   investor_id: string;
 
   fund_id: string;
@@ -45,10 +36,7 @@ export interface CreateFundTransactionDTO {
   nav?: number;
 }
 
-
-
 export interface UpdateFundTransactionDTO {
-
   status?: OrderStatus;
 
   units?: number;
@@ -56,10 +44,7 @@ export interface UpdateFundTransactionDTO {
   nav?: number;
 }
 
-
-
 export interface FundTransactionDetails {
-
   id: string;
 
   investor_id: string;
@@ -83,10 +68,7 @@ export interface FundTransactionDetails {
   transaction_date: Date;
 }
 
-
-
 export interface InvestorTransactionSummary {
-
   investor_id: string;
 
   total_purchase_amount: number;

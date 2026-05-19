@@ -5,12 +5,7 @@ import {
   UpdateMutualFundDTO,
 } from "../models/mutualFund.model.js";
 
-
-
-export const createFund = async (
-  payload: CreateMutualFundDTO
-) => {
-
+export const createFund = async (payload: CreateMutualFundDTO) => {
   const query = `
     INSERT INTO mutual_funds_master (
       fund_code,
@@ -33,20 +28,12 @@ export const createFund = async (
     payload.current_nav,
   ];
 
-  const result = await pool.query(
-    query,
-    values
-  );
+  const result = await pool.query(query, values);
 
   return result.rows[0];
 };
 
-
-
-
-
 export const getAllFunds = async () => {
-
   const query = `
     SELECT *
     FROM mutual_funds_master
@@ -58,59 +45,31 @@ export const getAllFunds = async () => {
   return result.rows;
 };
 
-
-
-
-
-export const getFundById = async (
-  id: string
-) => {
-
+export const getFundById = async (id: string) => {
   const query = `
     SELECT *
     FROM mutual_funds_master
     WHERE id = $1;
   `;
 
-  const result = await pool.query(
-    query,
-    [id]
-  );
+  const result = await pool.query(query, [id]);
 
   return result.rows[0];
 };
 
-
-
-
-
-export const getFundByCode = async (
-  fundCode: string
-) => {
-
+export const getFundByCode = async (fundCode: string) => {
   const query = `
     SELECT *
     FROM mutual_funds_master
     WHERE fund_code = $1;
   `;
 
-  const result = await pool.query(
-    query,
-    [fundCode]
-  );
+  const result = await pool.query(query, [fundCode]);
 
   return result.rows[0];
 };
 
-
-
-
-
-export const updateFund = async (
-  id: string,
-  payload: UpdateMutualFundDTO
-) => {
-
+export const updateFund = async (id: string, payload: UpdateMutualFundDTO) => {
   const query = `
     UPDATE mutual_funds_master
     SET
@@ -133,32 +92,19 @@ export const updateFund = async (
     id,
   ];
 
-  const result = await pool.query(
-    query,
-    values
-  );
+  const result = await pool.query(query, values);
 
   return result.rows[0];
 };
 
-
-
-
-
-export const deleteFund = async (
-  id: string
-) => {
-
+export const deleteFund = async (id: string) => {
   const query = `
     DELETE FROM mutual_funds_master
     WHERE id = $1
     RETURNING *;
   `;
 
-  const result = await pool.query(
-    query,
-    [id]
-  );
+  const result = await pool.query(query, [id]);
 
   return result.rows[0];
 };

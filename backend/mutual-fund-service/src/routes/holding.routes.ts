@@ -1,71 +1,29 @@
-import { Router }
-  from "express";
+import { Router } from "express";
 
-import * as holdingController
-  from "../controllers/holding.controller.js";
+import * as holdingController from "../controllers/holding.controller.js";
 
-import {
-  authMiddleware,
-} from "../middlewares/auth.middleware.js";
-
-
+import { authMiddleware } from "../middlewares/auth.middleware.js";
 
 const router = Router();
 
+router.post("/", authMiddleware, holdingController.createHolding);
 
+router.get("/:id", authMiddleware, holdingController.getHoldingById);
 
-// CREATE HOLDING
-router.post(
-  "/",
-  authMiddleware,
-  holdingController.createHolding
-);
-
-
-
-// GET HOLDING BY ID
-router.get(
-  "/:id",
-  authMiddleware,
-  holdingController.getHoldingById
-);
-
-
-
-// GET INVESTOR HOLDINGS
 router.get(
   "/investor/:investorId",
   authMiddleware,
-  holdingController.getInvestorHoldings
+  holdingController.getInvestorHoldings,
 );
 
+router.put("/:id", authMiddleware, holdingController.updateHolding);
 
+router.delete("/:id", authMiddleware, holdingController.deleteHolding);
 
-// UPDATE HOLDING
-router.put(
-  "/:id",
-  authMiddleware,
-  holdingController.updateHolding
-);
-
-
-
-// DELETE HOLDING
-router.delete(
-  "/:id",
-  authMiddleware,
-  holdingController.deleteHolding
-);
-
-
-
-// GET PORTFOLIO SUMMARY
 router.get(
   "/portfolio/summary/:investorId",
   authMiddleware,
-  holdingController.getInvestorPortfolioSummary
+  holdingController.getInvestorPortfolioSummary,
 );
-
-
 
 export default router;

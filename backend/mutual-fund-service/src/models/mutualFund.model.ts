@@ -1,13 +1,6 @@
-import {
-  MfTransactionType,
-  SipFrequency,
-  SipStatus,
-} from "../utils/enums.js";
-
-
+import { MfTransactionType, SipFrequency, SipStatus } from "../utils/enums.js";
 
 export interface MutualFund {
-
   id: string;
 
   fund_code: string;
@@ -27,10 +20,7 @@ export interface MutualFund {
   updated_at?: Date;
 }
 
-
-
 export interface CreateMutualFundDTO {
-
   fund_code: string;
 
   fund_name: string;
@@ -44,10 +34,7 @@ export interface CreateMutualFundDTO {
   current_nav: number;
 }
 
-
-
 export interface UpdateMutualFundDTO {
-
   fund_name?: string;
 
   amc_name?: string;
@@ -59,10 +46,7 @@ export interface UpdateMutualFundDTO {
   current_nav?: number;
 }
 
-
-
 export interface NavHistory {
-
   id: string;
 
   fund_id: string;
@@ -74,10 +58,7 @@ export interface NavHistory {
   created_at?: Date;
 }
 
-
-
 export interface InvestorFundHolding {
-
   id: string;
 
   investor_id: string;
@@ -99,10 +80,7 @@ export interface InvestorFundHolding {
   updated_at?: Date;
 }
 
-
-
 export interface FundTransaction {
-
   id: string;
 
   investor_id: string;
@@ -124,10 +102,7 @@ export interface FundTransaction {
   created_at?: Date;
 }
 
-
-
 export interface SipAccount {
-
   id: string;
 
   investor_id: string;

@@ -1,102 +1,56 @@
-import { Router }
-  from "express";
+import { Router } from "express";
 
-import * as transactionController
-  from "../controllers/transaction.controller.js";
+import * as transactionController from "../controllers/transaction.controller.js";
 
-import {
-  authMiddleware,
-} from "../middlewares/auth.middleware.js";
+import { authMiddleware } from "../middlewares/auth.middleware.js";
 
-import {
-  validationMiddleware,
-} from "../middlewares/validation.middleware.js";
+import { validationMiddleware } from "../middlewares/validation.middleware.js";
 
 import {
   createTransactionValidator,
   updateTransactionValidator,
 } from "../validators/transaction.validator.js";
 
-
-
 const router = Router();
 
-
-
-// CREATE TRANSACTION
 router.post(
   "/",
   authMiddleware,
   createTransactionValidator,
   validationMiddleware,
-  transactionController.createTransaction
+  transactionController.createTransaction,
 );
 
+router.get("/", authMiddleware, transactionController.getAllTransactions);
 
+router.get("/:id", authMiddleware, transactionController.getTransactionById);
 
-// GET ALL TRANSACTIONS
-router.get(
-  "/",
-  authMiddleware,
-  transactionController.getAllTransactions
-);
-
-
-
-// GET TRANSACTION BY ID
-router.get(
-  "/:id",
-  authMiddleware,
-  transactionController.getTransactionById
-);
-
-
-
-// GET INVESTOR TRANSACTIONS
 router.get(
   "/investor/:investorId",
   authMiddleware,
-  transactionController.getInvestorTransactions
+  transactionController.getInvestorTransactions,
 );
 
-
-
-// UPDATE TRANSACTION
 router.put(
   "/:id",
   authMiddleware,
   updateTransactionValidator,
   validationMiddleware,
-  transactionController.updateTransaction
+  transactionController.updateTransaction,
 );
 
+router.delete("/:id", authMiddleware, transactionController.deleteTransaction);
 
-
-// DELETE TRANSACTION
-router.delete(
-  "/:id",
-  authMiddleware,
-  transactionController.deleteTransaction
-);
-
-
-
-// GET PENDING TRANSACTIONS
 router.get(
   "/status/pending",
   authMiddleware,
-  transactionController.getPendingTransactions
+  transactionController.getPendingTransactions,
 );
 
-
-
-// GET FAILED TRANSACTIONS
 router.get(
   "/status/failed",
   authMiddleware,
-  transactionController.getFailedTransactions
+  transactionController.getFailedTransactions,
 );
-
-
 
 export default router;

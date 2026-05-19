@@ -1,11 +1,6 @@
-import {
-  SipFrequency,
-  SipStatus,
-  OrderStatus,
-} from "../utils/enums.js";
+import { SipFrequency, SipStatus, OrderStatus } from "../utils/enums.js";
 
 export interface UpdateSipTransactionDTO {
-
   nav?: number;
 
   units_allocated?: number;
@@ -17,10 +12,7 @@ export interface UpdateSipTransactionDTO {
   failure_reason?: string;
 }
 
-
-
 export interface SipAccount {
-
   id: string;
 
   investor_id: string;
@@ -42,10 +34,7 @@ export interface SipAccount {
   updated_at?: Date;
 }
 
-
-
 export interface CreateSipAccountDTO {
-
   investor_id: string;
 
   fund_id: string;
@@ -57,10 +46,7 @@ export interface CreateSipAccountDTO {
   start_date: Date;
 }
 
-
-
 export interface UpdateSipAccountDTO {
-
   sip_amount?: number;
 
   frequency?: SipFrequency;
@@ -70,10 +56,7 @@ export interface UpdateSipAccountDTO {
   status?: SipStatus;
 }
 
-
-
 export interface SipTransaction {
-
   id: string;
 
   sip_id: string;
@@ -93,10 +76,7 @@ export interface SipTransaction {
   created_at?: Date;
 }
 
-
-
 export interface CreateSipTransactionDTO {
-
   sip_id: string;
 
   amount: number;
@@ -112,10 +92,7 @@ export interface CreateSipTransactionDTO {
   failure_reason?: string;
 }
 
-
-
 export interface SipDetails {
-
   sip_id: string;
 
   investor_id: string;
@@ -135,10 +112,7 @@ export interface SipDetails {
   status: SipStatus;
 }
 
-
-
 export interface SipSummary {
-
   investor_id: string;
 
   total_active_sips: number;

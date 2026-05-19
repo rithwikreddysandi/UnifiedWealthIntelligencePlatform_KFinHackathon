@@ -1,12 +1,6 @@
-import {
-  AlertSeverity,
-  AlertStatus,
-} from "../utils/enums.js";
-
-
+import { AlertSeverity, AlertStatus } from "../utils/enums.js";
 
 export interface Alert {
-
   id: string;
 
   investor_id?: string;
@@ -22,10 +16,7 @@ export interface Alert {
   created_at?: Date;
 }
 
-
-
 export interface CreateAlertDTO {
-
   investor_id?: string;
 
   alert_type: string;
@@ -35,10 +26,7 @@ export interface CreateAlertDTO {
   message: string;
 }
 
-
-
 export interface UpdateAlertDTO {
-
   severity?: AlertSeverity;
 
   message?: string;
@@ -46,10 +34,7 @@ export interface UpdateAlertDTO {
   status?: AlertStatus;
 }
 
-
-
 export interface AlertDetails {
-
   id: string;
 
   investor_id?: string;
@@ -67,10 +52,7 @@ export interface AlertDetails {
   created_at?: Date;
 }
 
-
-
 export interface AlertSummary {
-
   total_alerts: number;
 
   open_alerts: number;
@@ -84,10 +66,7 @@ export interface AlertSummary {
   high_alerts: number;
 }
 
-
-
 export interface FailedSipAlert {
-
   investor_id: string;
 
   investor_name: string;
@@ -103,10 +82,7 @@ export interface FailedSipAlert {
   severity: AlertSeverity;
 }
 
-
-
 export interface InactiveInvestorAlert {
-
   investor_id: string;
 
   investor_name: string;

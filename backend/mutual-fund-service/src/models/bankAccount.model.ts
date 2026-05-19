@@ -1,9 +1,6 @@
 import { MandateStatus } from "../utils/enums.js";
 
-
-
 export interface BankAccount {
-
   id: string;
 
   investor_id: string;
@@ -19,10 +16,7 @@ export interface BankAccount {
   created_at?: Date;
 }
 
-
-
 export interface CreateBankAccountDTO {
-
   investor_id: string;
 
   bank_name: string;
@@ -32,10 +26,7 @@ export interface CreateBankAccountDTO {
   ifsc_code: string;
 }
 
-
-
 export interface UpdateBankAccountDTO {
-
   bank_name?: string;
 
   account_number_masked?: string;
@@ -45,10 +36,7 @@ export interface UpdateBankAccountDTO {
   mandate_status?: MandateStatus;
 }
 
-
-
 export interface BankAccountDetails {
-
   id: string;
 
   investor_id: string;
@@ -66,10 +54,7 @@ export interface BankAccountDetails {
   created_at?: Date;
 }
 
-
-
 export interface InvestorBankSummary {
-
   investor_id: string;
 
   total_bank_accounts: number;

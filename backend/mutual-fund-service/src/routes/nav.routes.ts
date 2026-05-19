@@ -1,80 +1,23 @@
-import { Router }
-  from "express";
+import { Router } from "express";
 
-import * as navController
-  from "../controllers/nav.controller.js";
+import * as navController from "../controllers/nav.controller.js";
 
-import {
-  authMiddleware,
-} from "../middlewares/auth.middleware.js";
-
-
+import { authMiddleware } from "../middlewares/auth.middleware.js";
 
 const router = Router();
 
+router.post("/", authMiddleware, navController.createNavHistory);
 
+router.get("/:id", authMiddleware, navController.getNavHistoryById);
 
-// CREATE NAV HISTORY
-router.post(
-  "/",
-  authMiddleware,
-  navController.createNavHistory
-);
+router.get("/fund/:fundId", authMiddleware, navController.getFundNavHistory);
 
+router.get("/latest/:fundId", authMiddleware, navController.getLatestNav);
 
+router.get("/latest/all", authMiddleware, navController.getLatestNavs);
 
-// GET NAV HISTORY BY ID
-router.get(
-  "/:id",
-  authMiddleware,
-  navController.getNavHistoryById
-);
+router.put("/:id", authMiddleware, navController.updateNavHistory);
 
-
-
-// GET FUND NAV HISTORY
-router.get(
-  "/fund/:fundId",
-  authMiddleware,
-  navController.getFundNavHistory
-);
-
-
-
-// GET LATEST NAV
-router.get(
-  "/latest/:fundId",
-  authMiddleware,
-  navController.getLatestNav
-);
-
-
-
-// GET ALL LATEST NAVS
-router.get(
-  "/latest/all",
-  authMiddleware,
-  navController.getLatestNavs
-);
-
-
-
-// UPDATE NAV HISTORY
-router.put(
-  "/:id",
-  authMiddleware,
-  navController.updateNavHistory
-);
-
-
-
-// DELETE NAV HISTORY
-router.delete(
-  "/:id",
-  authMiddleware,
-  navController.deleteNavHistory
-);
-
-
+router.delete("/:id", authMiddleware, navController.deleteNavHistory);
 
 export default router;

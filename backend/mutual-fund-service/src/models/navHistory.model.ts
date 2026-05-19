@@ -1,5 +1,4 @@
 export interface NavHistory {
-
   id: string;
 
   fund_id: string;
@@ -11,10 +10,7 @@ export interface NavHistory {
   created_at?: Date;
 }
 
-
-
 export interface CreateNavHistoryDTO {
-
   fund_id: string;
 
   nav: number;
@@ -22,19 +18,13 @@ export interface CreateNavHistoryDTO {
   nav_date: Date;
 }
 
-
-
 export interface UpdateNavHistoryDTO {
-
   nav?: number;
 
   nav_date?: Date;
 }
 
-
-
 export interface NavTrend {
-
   fund_id: string;
 
   fund_name: string;

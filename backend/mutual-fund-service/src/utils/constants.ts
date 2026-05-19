@@ -1,14 +1,10 @@
 export const SERVER_NAME = "MUTUAL_FUND_SERVICE";
 
-
-
 export const DEFAULT_PAGE = 1;
 
 export const DEFAULT_LIMIT = 10;
 
 export const MAX_LIMIT = 100;
-
-
 
 export const CACHE_KEYS = {
   ALL_FUNDS: "ALL_FUNDS",
@@ -17,18 +13,13 @@ export const CACHE_KEYS = {
   INVESTOR_HOLDINGS: "INVESTOR_HOLDINGS",
 };
 
-
-
 export const CACHE_EXPIRY = {
-  SHORT: 60,          // 1 minute
-  MEDIUM: 300,        // 5 minutes
-  LONG: 3600,         // 1 hour
+  SHORT: 60, // 1 minute
+  MEDIUM: 300, // 5 minutes
+  LONG: 3600, // 1 hour
 };
 
-
-
 export const API_MESSAGES = {
-
   // FUND
   FUND_CREATED: "Fund created successfully",
   FUND_UPDATED: "Fund updated successfully",
@@ -60,10 +51,7 @@ export const API_MESSAGES = {
   FORBIDDEN: "Forbidden access",
 };
 
-
-
 export const HTTP_STATUS = {
-
   OK: 200,
 
   CREATED: 201,
