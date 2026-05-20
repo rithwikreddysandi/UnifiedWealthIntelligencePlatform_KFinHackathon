@@ -1,3 +1,4 @@
+import { log } from "node:console";
 import { pool } from "../config/db.js";
 
 import {
@@ -120,6 +121,9 @@ export const getLatestNavs = async () => {
     `;
 
   const result = await pool.query(query);
+
+  console.log(result);
+  
 
   return result.rows;
 };

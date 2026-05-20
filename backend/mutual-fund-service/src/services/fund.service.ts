@@ -68,6 +68,16 @@ export const getFundById = async (id: string) => {
   return fund;
 };
 
+export const getFundsByInvestor =
+  async (
+    investorId: string
+  ) => {
+
+    return await fundRepository.getFundsByInvestor(
+      investorId
+    );
+};
+
 export const updateFund = async (id: string, payload: UpdateMutualFundDTO) => {
   const existingFund = await fundRepository.getFundById(id);
 

@@ -25,13 +25,13 @@ export interface CreateMutualFundDTO {
 
   fund_name: string;
 
-  amc_name: string;
+  amc_name?: string | null;
 
-  category: string;
+  category?: string | null;
 
-  risk_level: string;
+  risk_level?: string | null;
 
-  current_nav: number;
+  current_nav?: number | null;
 }
 
 export interface UpdateMutualFundDTO {

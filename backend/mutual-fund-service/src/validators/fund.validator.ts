@@ -6,36 +6,54 @@ export const createFundValidator = [
     .withMessage("Fund code is required")
     .isLength({
       min: 3,
-      max: 20,
+      max: 50,
     })
-    .withMessage("Fund code must be between 3 and 20 characters"),
+    .withMessage("Fund code must be between 3 and 50 characters"),
 
   body("fund_name")
     .notEmpty()
     .withMessage("Fund name is required")
     .isLength({
       min: 3,
-      max: 255,
+      max: 200,
     })
     .withMessage("Fund name is invalid"),
 
-  body("amc_name").notEmpty().withMessage("AMC name is required"),
+  body("amc_name")
+    .optional({
+      values: "falsy",
+    })
+    .isLength({
+      max: 150,
+    })
+    .withMessage("AMC name is invalid"),
 
-  body("category").notEmpty().withMessage("Category is required"),
+  body("category")
+    .optional({
+      values: "falsy",
+    })
+    .isLength({
+      max: 100,
+    })
+    .withMessage("Category is invalid"),
 
   body("risk_level")
-    .notEmpty()
-    .withMessage("Risk level is required")
-    .isIn(["LOW", "MEDIUM", "HIGH", "VERY_HIGH"])
+    .optional({
+      values: "falsy",
+    })
+    .isLength({
+      max: 50,
+    })
     .withMessage("Invalid risk level"),
 
   body("current_nav")
-    .notEmpty()
-    .withMessage("Current NAV is required")
-    .isFloat({
-      gt: 0,
+    .optional({
+      values: "falsy",
     })
-    .withMessage("NAV must be greater than 0"),
+    .isFloat({
+      min: 0,
+    })
+    .withMessage("NAV must be 0 or greater"),
 ];
 
 export const updateFundValidator = [
@@ -43,23 +61,43 @@ export const updateFundValidator = [
     .optional()
     .isLength({
       min: 3,
-      max: 255,
+      max: 200,
     })
     .withMessage("Invalid fund name"),
 
-  body("amc_name").optional().isString().withMessage("AMC name must be string"),
+  body("amc_name")
+    .optional({
+      values: "falsy",
+    })
+    .isLength({
+      max: 150,
+    })
+    .withMessage("AMC name is invalid"),
 
-  body("category").optional().isString().withMessage("Category must be string"),
+  body("category")
+    .optional({
+      values: "falsy",
+    })
+    .isLength({
+      max: 100,
+    })
+    .withMessage("Category is invalid"),
 
   body("risk_level")
-    .optional()
-    .isIn(["LOW", "MEDIUM", "HIGH", "VERY_HIGH"])
+    .optional({
+      values: "falsy",
+    })
+    .isLength({
+      max: 50,
+    })
     .withMessage("Invalid risk level"),
 
   body("current_nav")
-    .optional()
-    .isFloat({
-      gt: 0,
+    .optional({
+      values: "falsy",
     })
-    .withMessage("NAV must be greater than 0"),
+    .isFloat({
+      min: 0,
+    })
+    .withMessage("NAV must be 0 or greater"),
 ];

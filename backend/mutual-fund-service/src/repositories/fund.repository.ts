@@ -22,10 +22,10 @@ export const createFund = async (payload: CreateMutualFundDTO) => {
   const values = [
     payload.fund_code,
     payload.fund_name,
-    payload.amc_name,
-    payload.category,
-    payload.risk_level,
-    payload.current_nav,
+    payload.amc_name || null,
+    payload.category || null,
+    payload.risk_level || null,
+    payload.current_nav ?? 0,
   ];
 
   const result = await pool.query(query, values);
@@ -55,6 +55,26 @@ export const getFundById = async (id: string) => {
   const result = await pool.query(query, [id]);
 
   return result.rows[0];
+};
+
+export const getFundsByInvestor =
+  async (
+    investorId: string
+  ) => {
+
+    const query = `
+      SELECT *
+      FROM mutual_funds_master
+      WHERE investor_id = $1
+    `;
+
+    const result =
+      await pool.query(
+        query,
+        [investorId]
+      );
+
+    return result.rows;
 };
 
 export const getFundByCode = async (fundCode: string) => {

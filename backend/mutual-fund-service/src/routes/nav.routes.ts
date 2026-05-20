@@ -10,11 +10,12 @@ router.post("/", authMiddleware, navController.createNavHistory);
 
 router.get("/:id", authMiddleware, navController.getNavHistoryById);
 
+router.get("/latest/all", authMiddleware, navController.getLatestNavs);
+
 router.get("/fund/:fundId", authMiddleware, navController.getFundNavHistory);
 
 router.get("/latest/:fundId", authMiddleware, navController.getLatestNav);
 
-router.get("/latest/all", authMiddleware, navController.getLatestNavs);
 
 router.put("/:id", authMiddleware, navController.updateNavHistory);
 

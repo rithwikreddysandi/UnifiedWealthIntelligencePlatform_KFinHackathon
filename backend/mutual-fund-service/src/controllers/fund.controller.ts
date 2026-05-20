@@ -52,6 +52,30 @@ export const getFundById = async (
   }
 };
 
+export const getFundsByInvestor = async (req: Request,res: Response,next: NextFunction,) => {
+    try {
+
+      const {
+        investorId,
+      } = req.params;
+
+      const funds =
+        await fundService.getFundsByInvestor(
+          String(investorId)
+        );
+
+      return successResponse(
+        res,
+        "Investor funds fetched successfully",
+        funds
+      );
+
+    } catch (error) {
+
+      next(error);
+    }
+};
+
 export const updateFund = async (
   req: Request,
   res: Response,
