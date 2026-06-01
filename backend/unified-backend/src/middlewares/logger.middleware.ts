@@ -5,7 +5,7 @@ import { logger } from "../config/logger.js";
 export const loggerMiddleware = (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   logger.info({
     method: req.method,

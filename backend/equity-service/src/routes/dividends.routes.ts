@@ -5,21 +5,12 @@ import {
   getDividendsByInvestorController,
 } from "../controllers/dividends.controller";
 
-import {
-  createDividendValidator,
-} from "../validators/dividends.validation";
+import { createDividendValidator } from "../validators/dividends.validation";
 
 const router = Router();
 
-router.post(
-  "/",
-  createDividendValidator,
-  createDividendController
-);
+router.post("/", createDividendValidator, createDividendController);
 
-router.get(
-  "/:investorId",
-  getDividendsByInvestorController
-);
+router.get("/:investorId", getDividendsByInvestorController);
 
 export default router;

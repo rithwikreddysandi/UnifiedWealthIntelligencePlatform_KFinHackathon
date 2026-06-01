@@ -7,14 +7,8 @@ import {
 
 const router = Router();
 
-router.post(
-  "/",
-  createPortfolioSnapshotController
-);
+router.post("/", createPortfolioSnapshotController);
 
-router.get(
-  "/:investorId",
-  getPortfolioSnapshotsController
-);
+router.get("/:investorId", getPortfolioSnapshotsController);
 
 export default router;

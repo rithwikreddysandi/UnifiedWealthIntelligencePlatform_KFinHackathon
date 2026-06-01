@@ -1,13 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import {
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import RoleGuard from "@/components/auth/RoleGuard";
+
 import {
   ROLES,
   RoleName,
@@ -15,114 +12,127 @@ import {
   roleToneClasses,
   roleWorkflows,
 } from "@/config/roles";
-import {
-  fetchPlatformOverview,
-} from "@/services/platform.service";
+
+import { fetchPlatformOverview } from "@/services/platform.service";
 
 interface Props {
   roleName: RoleName;
 }
 
-export default function RoleWorkspace({
-  roleName,
-}: Props) {
+export default function RoleWorkspace({ roleName }: Props) {
+  const role = ROLES.find((item) => item.name === roleName)!;
 
-  const role =
-    ROLES.find(
-      (item) => item.name === roleName
-    )!;
+  const Icon = role.icon;
 
-  const Icon =
-    role.icon;
+  const [overview, setOverview] = useState<any>(null);
 
-  const [overview, setOverview] =
-    useState<any>(null);
-
-  const [loading, setLoading] =
-    useState(true);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const loadOverview = async () => {
+      try {
+        const response = await fetchPlatformOverview();
 
-    const loadOverview =
-      async () => {
-
-        try {
-          const response =
-            await fetchPlatformOverview();
-
-          setOverview(response);
-        } catch (error) {
-          console.log(error);
-        } finally {
-          setLoading(false);
-        }
-      };
+        setOverview(response);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
     loadOverview();
-
   }, []);
 
-  const workflows =
-    roleWorkflows[roleName];
+  const workflows = roleWorkflows[roleName];
 
-  const metrics =
-    useMemo(() => {
+  const metrics = useMemo(() => {
+    const byKey = overview?.byKey || {};
 
-      const byKey =
-        overview?.byKey || {};
+    const endpointScore = `${overview?.healthy || 0}/${overview?.total || 0}`;
 
-      const endpointScore =
-        `${overview?.healthy || 0}/${overview?.total || 0}`;
+    const common = {
+      ADMIN: [
+        ["Investors", byKey.investors?.count || 0, "Registered investors"],
+        ["API Coverage", endpointScore, "Backend endpoint availability"],
+        ["Alerts", byKey.alerts?.count || 0, "Open operational alerts"],
+        [
+          "Services",
+          byKey.serviceHealth?.count || 0,
+          "Active backend services",
+        ],
+      ],
 
-      const common = {
-        ADMIN: [
-          ["Investors", byKey.investors?.count || 0, "From /investors"],
-          ["API Coverage", endpointScore, "Readable backend endpoints"],
-          ["Alerts", byKey.alerts?.count || 0, "From /alerts"],
-          ["Services", byKey.serviceHealth?.count || 0, "From /service-health"],
+      OPERATIONS: [
+        ["Transactions", byKey.transactions?.count || 0, "Pending reviews"],
+        [
+          "Verifications",
+          byKey.investors?.count || 0,
+          "Investor verification workflow",
         ],
-        ADVISOR: [
-          ["Investors", byKey.investors?.count || 0, "Accessible investor book"],
-          ["Portfolio Records", byKey.portfolio?.count || 0, "Portfolio summary payload"],
-          ["Equity Holdings", byKey.equityHoldings?.count || 0, "From equity service"],
-          ["Fund Holdings", byKey.fundHoldings?.count || 0, "From mutual fund service"],
-        ],
-        AUDITOR: [
-          ["Unified Alerts", byKey.alerts?.count || 0, "Operational risk trail"],
-          ["MF Alerts", byKey.mfAlerts?.count || 0, "Mutual fund alert repository"],
-          ["Endpoint Failures", overview?.failed || 0, "Unauthorized or unavailable APIs"],
-          ["Endpoint Health", endpointScore, "Live frontend API coverage"],
-        ],
-        OPERATIONS: [
-          ["Service Records", byKey.serviceHealth?.count || 0, "Health table rows"],
-          ["Market Orders", byKey.equityOrders?.count || 0, "Equity order queue"],
-          ["Mandates", byKey.mandates?.count || 0, "MF mandate workflow"],
-          ["Bank Accounts", byKey.bankAccounts?.count || 0, "Bank account workflow"],
-        ],
-        INVESTOR: [
-          ["Portfolio", byKey.portfolio?.count || 0, "Current investor summary"],
-          ["Properties", byKey.investorProperties?.count || 0, "Real estate records"],
-          ["Equity Trades", byKey.equityTransactions?.count || 0, "Investor equity transactions"],
-          ["SIPs", byKey.investorSips?.count || 0, "Investor SIP accounts"],
-        ],
-        RELATIONSHIP_MANAGER: [
-          ["Investors", byKey.investors?.count || 0, "Relationship universe"],
-          ["Alerts", byKey.alerts?.count || 0, "Open engagement signals"],
-          ["Properties", byKey.properties?.count || 0, "Client asset records"],
-          ["API Coverage", endpointScore, "Cross-service visibility"],
-        ],
-      };
+        ["Escalations", byKey.alerts?.count || 0, "Open escalation cases"],
+        ["Endpoint Health", endpointScore, "Platform availability"],
+      ],
 
-      return common[roleName];
-    }, [overview, roleName]);
+      COMPLIANCE: [
+        ["Audit Logs", byKey.auditLogs?.count || 0, "Compliance traceability"],
+        ["AML Reviews", byKey.investors?.count || 0, "Pending AML/KYC checks"],
+        ["Exceptions", byKey.alerts?.count || 0, "Compliance exceptions"],
+        ["Endpoint Health", endpointScore, "Platform availability"],
+      ],
+
+      INVESTOR: [
+        ["Portfolio", byKey.portfolio?.count || 0, "Current investor summary"],
+        [
+          "Properties",
+          byKey.investorProperties?.count || 0,
+          "Real estate records",
+        ],
+        [
+          "Equity Trades",
+          byKey.equityTransactions?.count || 0,
+          "Equity transactions",
+        ],
+        ["SIPs", byKey.investorSips?.count || 0, "Mutual fund SIP accounts"],
+      ],
+    };
+
+    return common[roleName];
+  }, [overview, roleName]);
+
+  const moduleLinks = {
+    ADMIN: [
+      ["Users", "/admin/users"],
+      ["Roles", "/admin/roles"],
+      ["Alerts", "/admin/alerts"],
+      ["Monitoring", "/admin/monitoring"],
+    ],
+
+    OPERATIONS: [
+      ["Transaction Review", "/operations/transaction-review"],
+      ["Investor Verification", "/operations/investor-verification"],
+      ["Escalations", "/operations/escalation-center"],
+      ["Dashboard", "/operations/dashboard"],
+    ],
+
+    COMPLIANCE: [
+      ["Audit Logs", "/compliance/audit-logs"],
+      ["AML Review", "/compliance/aml-review"],
+      ["Monitoring", "/compliance/monitoring"],
+      ["Dashboard", "/compliance/dashboard"],
+    ],
+
+    INVESTOR: [
+      ["Portfolio", "/investor/portfolio"],
+      ["Equities", "/investor/equities"],
+      ["Mutual Funds", "/investor/mutual-funds"],
+      ["Properties", "/investor/properties"],
+      ["Profile", "/investor/profile"],
+    ],
+  };
 
   return (
-    <RoleGuard
-      allowedRoles={[
-        roleName,
-        "ADMIN",
-      ]}
-    >
+    <RoleGuard allowedRoles={[roleName, "ADMIN"]}>
       <div className="space-y-8">
         <section
           className={`
@@ -159,20 +169,21 @@ export default function RoleWorkspace({
               </div>
 
               <p className="mt-5 text-base leading-7 text-[var(--muted)]">
-                {role.description}. This workspace is shaped around the database modules and unified backend service boundaries.
+                {role.description}. This workspace is shaped around operational
+                workflows and platform service boundaries.
               </p>
             </div>
 
             <div className="grid grid-cols-2 gap-3 text-sm">
               <Link
-                href="/dashboard"
+                href={role.route}
                 className="rounded-2xl border border-[var(--card-border)] bg-[var(--background)]/60 px-5 py-4 font-bold text-[var(--foreground)] hover:border-blue-500"
               >
                 Dashboard
               </Link>
 
               <Link
-                href="/monitoring"
+                href="/admin/monitoring"
                 className="rounded-2xl border border-[var(--card-border)] bg-[var(--background)]/60 px-5 py-4 font-bold text-[var(--foreground)] hover:border-blue-500"
               >
                 Monitoring
@@ -182,12 +193,15 @@ export default function RoleWorkspace({
         </section>
 
         <section className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-4">
-              {(loading ? [
+          {(loading
+            ? [
                 ["Loading", "...", "Retrieving backend data"],
                 ["Loading", "...", "Retrieving backend data"],
                 ["Loading", "...", "Retrieving backend data"],
                 ["Loading", "...", "Retrieving backend data"],
-              ] : metrics).map(([label, value, note], index) => (
+              ]
+            : metrics
+          ).map(([label, value, note], index) => (
             <div
               key={`${label}-${index}`}
               className="rounded-2xl border border-[var(--card-border)] bg-[var(--card)]/80 p-5 shadow-sm"
@@ -196,22 +210,16 @@ export default function RoleWorkspace({
                 {label}
               </p>
 
-              <p className="mt-3 text-3xl font-black tracking-tight">
-                {value}
-              </p>
+              <p className="mt-3 text-3xl font-black tracking-tight">{value}</p>
 
-              <p className="mt-2 text-sm text-[var(--muted)]">
-                {note}
-              </p>
+              <p className="mt-2 text-sm text-[var(--muted)]">{note}</p>
             </div>
           ))}
         </section>
 
         <section className="grid grid-cols-1 gap-6 xl:grid-cols-3">
           <div className="rounded-3xl border border-[var(--card-border)] bg-[var(--card)]/80 p-6 shadow-sm xl:col-span-2">
-            <h2 className="text-2xl font-black">
-              Workflow Focus
-            </h2>
+            <h2 className="text-2xl font-black">Workflow Focus</h2>
 
             <div className="mt-6 grid grid-cols-1 gap-4">
               {workflows.map((workflow, index) => (
@@ -232,71 +240,43 @@ export default function RoleWorkspace({
           </div>
 
           <div className="rounded-3xl border border-[var(--card-border)] bg-[var(--card)]/80 p-6 shadow-sm">
-            <h2 className="text-2xl font-black">
-              API Status
-            </h2>
+            <h2 className="text-2xl font-black">API Status</h2>
 
             <div className="mt-6 space-y-3">
-              {(overview?.endpoints || [])
-                .slice(0, 8)
-                .map((endpoint: any) => (
-                  <div
-                    key={endpoint.key}
-                    className="flex items-center justify-between rounded-2xl border border-[var(--card-border)] bg-[var(--background)]/50 px-4 py-3 text-sm"
+              {(overview?.endpoints || []).slice(0, 8).map((endpoint: any) => (
+                <div
+                  key={endpoint.key}
+                  className="flex items-center justify-between rounded-2xl border border-[var(--card-border)] bg-[var(--background)]/50 px-4 py-3 text-sm"
+                >
+                  <span className="font-bold">{endpoint.label}</span>
+
+                  <span
+                    className={
+                      endpoint.ok ? "text-emerald-500" : "text-amber-500"
+                    }
                   >
-                    <span className="font-bold">
-                      {endpoint.label}
-                    </span>
-
-                    <span
-                      className={
-                        endpoint.ok
-                          ? "text-emerald-500"
-                          : "text-amber-500"
-                      }
-                    >
-                      {endpoint.status}
-                    </span>
-                  </div>
-                ))}
-
-              <Link
-                href="/api-coverage"
-                className="flex items-center justify-between rounded-2xl border border-[var(--card-border)] bg-[var(--background)]/50 px-4 py-3 text-sm font-bold hover:border-blue-500"
-              >
-                View all backend APIs
-                <span className="text-[var(--muted)]">
-                  Open
-                </span>
-              </Link>
+                    {endpoint.status}
+                  </span>
+                </div>
+              ))}
             </div>
           </div>
         </section>
 
         <section className="rounded-3xl border border-[var(--card-border)] bg-[var(--card)]/80 p-6 shadow-sm">
-          <h2 className="text-2xl font-black">
-            Available Modules
-          </h2>
+          <h2 className="text-2xl font-black">Available Modules</h2>
 
           <div className="mt-6 grid grid-cols-1 gap-3 md:grid-cols-3 xl:grid-cols-6">
-            {[
-              ["Portfolio", "/portfolio"],
-              ["Equities", "/equities"],
-              ["Mutual Funds", "/mutual-funds"],
-              ["Properties", "/properties"],
-              ["Alerts", "/alerts"],
-              ["API Coverage", "/api-coverage"],
-            ].map(([label, href]) => (
-                <Link
-                  key={href}
-                  href={href}
-                  className="flex items-center justify-between rounded-2xl border border-[var(--card-border)] bg-[var(--background)]/50 px-4 py-3 text-sm font-bold hover:border-blue-500"
-                >
-                  {label}
-                  <span className="text-[var(--muted)]">
-                    Open
-                  </span>
-                </Link>
+            {moduleLinks[roleName].map(([label, href]) => (
+              <Link
+                key={href}
+                href={href}
+                className="flex items-center justify-between rounded-2xl border border-[var(--card-border)] bg-[var(--background)]/50 px-4 py-3 text-sm font-bold hover:border-blue-500"
+              >
+                {label}
+
+                <span className="text-[var(--muted)]">Open</span>
+              </Link>
             ))}
           </div>
         </section>

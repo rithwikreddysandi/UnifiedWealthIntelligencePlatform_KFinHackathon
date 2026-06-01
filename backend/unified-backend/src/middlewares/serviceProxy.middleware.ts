@@ -1,8 +1,4 @@
-import {
-  Request,
-  Response,
-  NextFunction,
-} from "express";
+import { Request, Response, NextFunction } from "express";
 
 import { getServiceBaseUrl } from "../integrations/serviceHttp.client.js";
 
@@ -12,11 +8,7 @@ type ServiceProxyOptions = {
   servicePathPrefix: string;
 };
 
-const blockedForwardHeaders = new Set([
-  "connection",
-  "content-length",
-  "host",
-]);
+const blockedForwardHeaders = new Set(["connection", "content-length", "host"]);
 
 const buildForwardHeaders = (req: Request) => {
   const headers = new Headers();
@@ -34,7 +26,11 @@ const buildForwardHeaders = (req: Request) => {
     headers.set(key, value);
   });
 
-  if (req.body && Object.keys(req.body).length > 0 && !headers.has("content-type")) {
+  if (
+    req.body &&
+    Object.keys(req.body).length > 0 &&
+    !headers.has("content-type")
+  ) {
     headers.set("content-type", "application/json");
   }
 
@@ -49,7 +45,8 @@ export const createServiceProxy =
       const servicePath = `${options.servicePathPrefix}${req.url}`;
       const targetUrl = `${baseUrl}${servicePath}`;
       const method = req.method.toUpperCase();
-      const hasBody = !["GET", "HEAD"].includes(method) && req.body !== undefined;
+      const hasBody =
+        !["GET", "HEAD"].includes(method) && req.body !== undefined;
 
       const controller = new AbortController();
       const timeout = setTimeout(() => {
@@ -60,7 +57,7 @@ export const createServiceProxy =
         method,
         headers: buildForwardHeaders(req),
         body: hasBody ? JSON.stringify(req.body) : undefined,
-        signal:controller.signal
+        signal: controller.signal,
       });
 
       clearTimeout(timeout);

@@ -6,7 +6,6 @@ import {
   getTransactionsByInvestorController,
 } from "../controllers/transactions.controller";
 
-
 import {
   buyStockValidator,
   sellStockValidator,
@@ -14,19 +13,10 @@ import {
 
 const router = Router();
 
-router.post(
-  "/buy",
-  buyStockValidator,
-  buyStockController
-);
+router.post("/buy", buyStockValidator, buyStockController);
 
-router.post(
-  "/sell",
-  sellStockValidator,
-  sellStockController
-);
+router.post("/sell", sellStockValidator, sellStockController);
 
-router.get("/:investorId",getTransactionsByInvestorController);
-
+router.get("/:investorId", getTransactionsByInvestorController);
 
 export default router;

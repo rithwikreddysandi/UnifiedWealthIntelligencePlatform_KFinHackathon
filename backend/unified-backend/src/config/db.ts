@@ -21,13 +21,11 @@ export const pool = new Pool({
   },
 });
 
-pool.connect()
+pool
+  .connect()
   .then(() => {
     console.log("PostgreSQL Connected");
   })
   .catch((error) => {
-    console.error(
-      "PostgreSQL Connection Error",
-      error
-    );
+    console.error("PostgreSQL Connection Error", error);
   });

@@ -1,8 +1,7 @@
 import { pool } from "../config/db.js";
 
-export const createPropertyService =
-  async (data: any) => {
-    const query = `
+export const createPropertyService = async (data: any) => {
+  const query = `
       INSERT INTO properties (
         investor_id,
         property_name,
@@ -22,39 +21,35 @@ export const createPropertyService =
       RETURNING *
     `;
 
-    const values = [
-      data.investor_id,
+  const values = [
+    data.investor_id,
 
-      data.property_name,
+    data.property_name,
 
-      data.property_type || null,
+    data.property_type || null,
 
-      data.location,
+    data.location,
 
-      data.purchase_price || 0,
+    data.purchase_price || 0,
 
-      data.current_valuation || 0,
+    data.current_valuation || 0,
 
-      data.rental_income || 0,
+    data.rental_income || 0,
 
-      data.ownership_percentage || 100,
+    data.ownership_percentage || 100,
 
-      data.purchase_date || null,
+    data.purchase_date || null,
 
-      data.metadata || {},
-    ];
+    data.metadata || {},
+  ];
 
-    const result = await pool.query(
-      query,
-      values
-    );
+  const result = await pool.query(query, values);
 
-    return result.rows[0];
-  };
+  return result.rows[0];
+};
 
-export const getAllPropertiesService =
-  async () => {
-    const query = `
+export const getAllPropertiesService = async () => {
+  const query = `
       SELECT
         p.*,
 
@@ -68,33 +63,26 @@ export const getAllPropertiesService =
       ORDER BY p.created_at DESC
     `;
 
-    const result = await pool.query(query);
+  const result = await pool.query(query);
 
-    return result.rows;
-  };
+  return result.rows;
+};
 
-export const getInvestorPropertiesService =
-  async (investorId: string) => {
-    const query = `
+export const getInvestorPropertiesService = async (investorId: string) => {
+  const query = `
       SELECT *
       FROM properties
       WHERE investor_id = $1
       ORDER BY created_at DESC
     `;
 
-    const result = await pool.query(query, [
-      investorId,
-    ]);
+  const result = await pool.query(query, [investorId]);
 
-    return result.rows;
-  };
+  return result.rows;
+};
 
-export const updatePropertyService =
-  async (
-    propertyId: string,
-    data: any
-  ) => {
-    const query = `
+export const updatePropertyService = async (propertyId: string, data: any) => {
+  const query = `
       UPDATE properties
       SET
         property_name =
@@ -120,30 +108,26 @@ export const updatePropertyService =
       RETURNING *
     `;
 
-    const values = [
-      data.property_name,
+  const values = [
+    data.property_name,
 
-      data.current_valuation,
+    data.current_valuation,
 
-      data.rental_income,
+    data.rental_income,
 
-      propertyId,
-    ];
+    propertyId,
+  ];
 
-    const result = await pool.query(
-      query,
-      values
-    );
+  const result = await pool.query(query, values);
 
-    return result.rows[0];
-  };
+  return result.rows[0];
+};
 
-export const deletePropertyService =
-  async (propertyId: string) => {
-    const query = `
+export const deletePropertyService = async (propertyId: string) => {
+  const query = `
       DELETE FROM properties
       WHERE id = $1
     `;
 
-    await pool.query(query, [propertyId]);
-  };
+  await pool.query(query, [propertyId]);
+};

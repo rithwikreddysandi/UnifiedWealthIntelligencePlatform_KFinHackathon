@@ -1,8 +1,7 @@
 import { pool } from "../config/db.js";
 
-export const getAllInvestorsService =
-  async () => {
-    const query = `
+export const getAllInvestorsService = async () => {
+  const query = `
       SELECT
         i.id,
         i.full_name,
@@ -28,14 +27,13 @@ export const getAllInvestorsService =
       ORDER BY i.created_at DESC
     `;
 
-    const result = await pool.query(query);
+  const result = await pool.query(query);
 
-    return result.rows;
-  };
+  return result.rows;
+};
 
-export const getInvestorByIdService =
-  async (investorId: string) => {
-    const query = `
+export const getInvestorByIdService = async (investorId: string) => {
+  const query = `
       SELECT
         i.*,
 
@@ -54,19 +52,13 @@ export const getInvestorByIdService =
       WHERE i.id = $1
     `;
 
-    const result = await pool.query(query, [
-      investorId,
-    ]);
+  const result = await pool.query(query, [investorId]);
 
-    return result.rows[0];
-  };
+  return result.rows[0];
+};
 
-export const updateInvestorService =
-  async (
-    investorId: string,
-    data: any
-  ) => {
-    const query = `
+export const updateInvestorService = async (investorId: string, data: any) => {
+  const query = `
       UPDATE investors
       SET
         full_name =
@@ -85,72 +77,56 @@ export const updateInvestorService =
       RETURNING *
     `;
 
-    const values = [
-      data.full_name,
+  const values = [data.full_name, data.phone, data.risk_profile, investorId];
 
-      data.phone,
+  const result = await pool.query(query, values);
 
-      data.risk_profile,
+  return result.rows[0];
+};
 
-      investorId,
-    ];
+export const deleteInvestorService = async (investorId: string) => {
+  const client = await pool.connect();
 
-    const result = await pool.query(
-      query,
-      values
-    );
+  try {
+    await client.query("BEGIN");
 
-    return result.rows[0];
-  };
-
-export const deleteInvestorService =
-  async (investorId: string) => {
-    const client = await pool.connect();
-
-    try {
-      await client.query("BEGIN");
-
-      const investorResult =
-        await client.query(
-          `
+    const investorResult = await client.query(
+      `
           SELECT user_id
           FROM investors
           WHERE id = $1
           `,
-          [investorId]
-        );
+      [investorId],
+    );
 
-      const investor =
-        investorResult.rows[0];
+    const investor = investorResult.rows[0];
 
-      if (!investor) {
-        throw new Error(
-          "Investor not found"
-        );
-      }
+    if (!investor) {
+      throw new Error("Investor not found");
+    }
 
-      await client.query(
-        `
+    await client.query(
+      `
         DELETE FROM investors
         WHERE id = $1
         `,
-        [investorId]
-      );
+      [investorId],
+    );
 
-      await client.query(
-        `
+    await client.query(
+      `
         DELETE FROM users
         WHERE id = $1
         `,
-        [investor.user_id]
-      );
+      [investor.user_id],
+    );
 
-      await client.query("COMMIT");
-    } catch (error) {
-      await client.query("ROLLBACK");
+    await client.query("COMMIT");
+  } catch (error) {
+    await client.query("ROLLBACK");
 
-      throw error;
-    } finally {
-      client.release();
-    }
-  };
+    throw error;
+  } finally {
+    client.release();
+  }
+};

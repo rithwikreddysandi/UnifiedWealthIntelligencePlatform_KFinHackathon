@@ -16,9 +16,6 @@ router.post("/", createAlert);
 
 router.get("/", getAlerts);
 
-router.patch(
-  "/:id/resolve",
-  resolveAlert
-);
+router.patch("/:id/resolve", resolveAlert);
 
 export default router;

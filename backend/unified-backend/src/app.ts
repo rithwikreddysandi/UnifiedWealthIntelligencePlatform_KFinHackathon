@@ -10,7 +10,6 @@ import { errorMiddleware } from "./middlewares/error.middleware.js";
 
 import { rateLimitMiddleware } from "./middlewares/rateLimit.middleware.js";
 
-
 const app = express();
 
 app.use(express.json());

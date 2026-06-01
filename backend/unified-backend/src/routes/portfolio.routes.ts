@@ -8,9 +8,6 @@ const router = express.Router();
 
 router.use(authMiddleware);
 
-router.get(
-  "/:investorId",
-  getPortfolio
-);
+router.get("/:investorId", getPortfolio);
 
 export default router;

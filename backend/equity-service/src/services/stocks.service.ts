@@ -7,31 +7,18 @@ export const getAllStocksService = async () => {
   return result.rows;
 };
 
-
 import { CREATE_STOCK } from "../database/queries/stocks.queries";
 
-export const createStockService = async (
-  stockData: any
-) => {
+export const createStockService = async (stockData: any) => {
+  const { symbol, company_name, sector, exchange, market_price } = stockData;
 
-  const {
+  const result = await pool.query(CREATE_STOCK, [
     symbol,
     company_name,
     sector,
     exchange,
     market_price,
-  } = stockData;
-
-  const result = await pool.query(
-    CREATE_STOCK,
-    [
-      symbol,
-      company_name,
-      sector,
-      exchange,
-      market_price,
-    ]
-  );
+  ]);
 
   return result.rows[0];
 };

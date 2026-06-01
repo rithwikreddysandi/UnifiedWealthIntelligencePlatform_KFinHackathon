@@ -13,11 +13,7 @@ export class ServiceRequestError extends Error {
 
   details: unknown;
 
-  constructor(
-    serviceName: ServiceName,
-    statusCode: number,
-    details: unknown
-  ) {
+  constructor(serviceName: ServiceName, statusCode: number, details: unknown) {
     super(`${serviceName} request failed`);
 
     this.statusCode = statusCode;
@@ -28,7 +24,7 @@ export class ServiceRequestError extends Error {
 
 export const getServiceBaseUrl = (
   envKey: "EQUITY_SERVICE_URL" | "MF_SERVICE_URL",
-  fallbackUrl: string
+  fallbackUrl: string,
 ) => {
   return (process.env[envKey] || fallbackUrl).replace(/\/+$/, "");
 };
@@ -36,7 +32,7 @@ export const getServiceBaseUrl = (
 export const requestService = async <T>(
   serviceName: ServiceName,
   url: string,
-  options: ServiceRequestOptions = {}
+  options: ServiceRequestOptions = {},
 ): Promise<T> => {
   const headers: Record<string, string> = {
     Accept: "application/json",

@@ -8,9 +8,6 @@ const router = express.Router();
 
 router.use(authMiddleware);
 
-router.get(
-  "/:investorId",
-  getDashboard
-);
+router.get("/:investorId", getDashboard);
 
 export default router;

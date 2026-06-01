@@ -1,8 +1,7 @@
 import { pool } from "../config/db.js";
 
-export const createAlertService =
-  async (data: any) => {
-    const query = `
+export const createAlertService = async (data: any) => {
+  const query = `
       INSERT INTO alerts (
         investor_id,
         alert_type,
@@ -16,29 +15,25 @@ export const createAlertService =
       RETURNING *
     `;
 
-    const values = [
-      data.investor_id,
+  const values = [
+    data.investor_id,
 
-      data.alert_type,
+    data.alert_type,
 
-      data.severity || "MEDIUM",
+    data.severity || "MEDIUM",
 
-      data.message,
+    data.message,
 
-      "OPEN",
-    ];
+    "OPEN",
+  ];
 
-    const result = await pool.query(
-      query,
-      values
-    );
+  const result = await pool.query(query, values);
 
-    return result.rows[0];
-  };
+  return result.rows[0];
+};
 
-export const getAlertsService =
-  async () => {
-    const query = `
+export const getAlertsService = async () => {
+  const query = `
       SELECT
         a.*,
 
@@ -52,14 +47,13 @@ export const getAlertsService =
       ORDER BY a.created_at DESC
     `;
 
-    const result = await pool.query(query);
+  const result = await pool.query(query);
 
-    return result.rows;
-  };
+  return result.rows;
+};
 
-export const resolveAlertService =
-  async (alertId: string) => {
-    const query = `
+export const resolveAlertService = async (alertId: string) => {
+  const query = `
       UPDATE alerts
       SET
         status = 'RESOLVED'
@@ -67,9 +61,7 @@ export const resolveAlertService =
       RETURNING *
     `;
 
-    const result = await pool.query(query, [
-      alertId,
-    ]);
+  const result = await pool.query(query, [alertId]);
 
-    return result.rows[0];
-  };
+  return result.rows[0];
+};

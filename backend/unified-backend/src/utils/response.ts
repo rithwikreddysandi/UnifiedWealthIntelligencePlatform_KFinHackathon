@@ -4,7 +4,7 @@ export const successResponse = (
   res: Response,
   message: string,
   data: any = null,
-  statusCode = 200
+  statusCode = 200,
 ) => {
   return res.status(statusCode).json({
     success: true,
@@ -18,7 +18,7 @@ export const successResponse = (
 export const errorResponse = (
   res: Response,
   message: string,
-  statusCode = 500
+  statusCode = 500,
 ) => {
   return res.status(statusCode).json({
     success: false,

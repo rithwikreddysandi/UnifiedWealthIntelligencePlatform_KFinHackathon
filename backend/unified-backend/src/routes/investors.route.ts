@@ -19,19 +19,9 @@ const router = express.Router();
 
 router.use(authMiddleware);
 
-router.get(
-  "/",
-  authorize([
-    "ADMIN",
-    "OPERATIONS",
-  ]),
-  getAllInvestors
-);
+router.get("/", authorize(["ADMIN", "OPERATIONS"]), getAllInvestors);
 
-router.get(
-  "/:id",
-  getInvestorById
-);
+router.get("/:id", getInvestorById);
 
 router.put(
   "/:id",
@@ -40,7 +30,7 @@ router.put(
 
   validate,
 
-  updateInvestor
+  updateInvestor,
 );
 
 router.delete(
@@ -48,7 +38,7 @@ router.delete(
 
   authorize(["ADMIN"]),
 
-  deleteInvestor
+  deleteInvestor,
 );
 
 export default router;

@@ -10,7 +10,7 @@ router.use(
     envKey: "EQUITY_SERVICE_URL",
     fallbackUrl: "http://localhost:5001",
     servicePathPrefix: "/api",
-  })
+  }),
 );
 
 router.use(
@@ -19,7 +19,7 @@ router.use(
     envKey: "MF_SERVICE_URL",
     fallbackUrl: "http://localhost:5002",
     servicePathPrefix: "/api/v1",
-  })
+  }),
 );
 
 export default router;

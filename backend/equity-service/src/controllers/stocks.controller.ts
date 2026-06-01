@@ -1,10 +1,7 @@
 import { Request, Response } from "express";
 import { getAllStocksService } from "../services/stocks.service";
 
-export const getAllStocksController = async (
-  req: Request,
-  res: Response
-) => {
+export const getAllStocksController = async (req: Request, res: Response) => {
   try {
     const data = await getAllStocksService();
 
@@ -23,13 +20,8 @@ export const getAllStocksController = async (
 import { validationResult } from "express-validator";
 import { createStockService } from "../services/stocks.service";
 
-export const createStockController = async (
-  req: Request,
-  res: Response
-) => {
-
+export const createStockController = async (req: Request, res: Response) => {
   try {
-
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
@@ -45,13 +37,10 @@ export const createStockController = async (
       success: true,
       data: stock,
     });
-
   } catch (error) {
-
     res.status(500).json({
       success: false,
       message: "Internal Server Error",
     });
-
   }
 };

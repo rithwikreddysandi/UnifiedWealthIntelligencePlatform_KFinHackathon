@@ -24,14 +24,12 @@ VALUES
 RETURNING *
 `;
 
-
 export const GET_EXISTING_HOLDING = `
 SELECT *
 FROM equity_holdings
 WHERE investor_id = $1
 AND stock_id = $2
 `;
-
 
 export const CREATE_HOLDING = `
 INSERT INTO equity_holdings
@@ -55,7 +53,6 @@ VALUES
 RETURNING *
 `;
 
-
 export const UPDATE_HOLDING = `
 UPDATE equity_holdings
 SET
@@ -67,7 +64,6 @@ SET
 WHERE id = $5
 RETURNING *
 `;
-
 
 export const CREATE_SELL_TRANSACTION = `
 INSERT INTO equity_transactions

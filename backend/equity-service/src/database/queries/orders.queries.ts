@@ -46,5 +46,3 @@ WHERE mo.investor_id = $1
 
 ORDER BY mo.placed_at DESC
 `;
-
-

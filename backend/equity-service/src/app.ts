@@ -18,9 +18,9 @@ app.use(morgan("dev"));
 app.use(express.json());
 
 app.use("/api/stocks", stocksRoutes);
-app.use("/api/holdings",holdingsRoutes);
-app.use("/api/transactions",transactionsRoutes);
-app.use("/api/orders",ordersRoutes);
-app.use("/api/portfolio-snapshots",portfolioRoutes);
-app.use("/api/dividends",dividendsRoutes);
+app.use("/api/holdings", holdingsRoutes);
+app.use("/api/transactions", transactionsRoutes);
+app.use("/api/orders", ordersRoutes);
+app.use("/api/portfolio-snapshots", portfolioRoutes);
+app.use("/api/dividends", dividendsRoutes);
 export default app;

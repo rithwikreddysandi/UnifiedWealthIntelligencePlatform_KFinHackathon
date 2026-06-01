@@ -1,8 +1,6 @@
 import { pool } from "../config/db.js";
 
-export const findUserByEmail = async (
-  email: string
-) => {
+export const findUserByEmail = async (email: string) => {
   const query = `
     SELECT
       u.id,
@@ -29,23 +27,20 @@ export const findUserByEmail = async (
     AND u.status = 'ACTIVE'
   `;
 
-  const result = await pool.query(query, [
-    email,
-  ]);
+  const result = await pool.query(query, [email]);
 
   return result.rows[0];
 };
 
-export const createInvestorAccount =
-  async (data: any) => {
-    const client = await pool.connect();
+export const createInvestorAccount = async (data: any) => {
+  const client = await pool.connect();
 
-    try {
-      await client.query("BEGIN");
+  try {
+    await client.query("BEGIN");
 
-      // CREATE USER
+    // CREATE USER
 
-      const createUserQuery = `
+    const createUserQuery = `
         INSERT INTO users (
           full_name,
           email,
@@ -65,23 +60,15 @@ export const createInvestorAccount =
         RETURNING *
       `;
 
-      const userValues = [
-        data.full_name,
-        data.email,
-        data.password_hash,
-      ];
+    const userValues = [data.full_name, data.email, data.password_hash];
 
-      const userResult =
-        await client.query(
-          createUserQuery,
-          userValues
-        );
+    const userResult = await client.query(createUserQuery, userValues);
 
-      const user = userResult.rows[0];
+    const user = userResult.rows[0];
 
-      // CREATE INVESTOR
+    // CREATE INVESTOR
 
-      const createInvestorQuery = `
+    const createInvestorQuery = `
         INSERT INTO investors (
           full_name,
           email,
@@ -103,40 +90,37 @@ export const createInvestorAccount =
         RETURNING *
       `;
 
-      const investorValues = [
-        data.full_name,
-        data.email,
-        data.phone,
-        data.pan_number,
-        data.dob || null,
-        data.risk_profile || "MODERATE",
-        user.id,
-      ];
+    const investorValues = [
+      data.full_name,
+      data.email,
+      data.phone,
+      data.pan_number,
+      data.dob || null,
+      data.risk_profile || "MODERATE",
+      user.id,
+    ];
 
-      const investorResult =
-        await client.query(
-          createInvestorQuery,
-          investorValues
-        );
+    const investorResult = await client.query(
+      createInvestorQuery,
+      investorValues,
+    );
 
-      await client.query("COMMIT");
+    await client.query("COMMIT");
 
-      return {
-        user,
-        investor: investorResult.rows[0],
-      };
-    } catch (error) {
-      await client.query("ROLLBACK");
+    return {
+      user,
+      investor: investorResult.rows[0],
+    };
+  } catch (error) {
+    await client.query("ROLLBACK");
 
-      throw error;
-    } finally {
-      client.release();
-    }
-  };
+    throw error;
+  } finally {
+    client.release();
+  }
+};
 
-export const updateLastLogin = async (
-  userId: string
-) => {
+export const updateLastLogin = async (userId: string) => {
   const query = `
     UPDATE users
     SET last_login_at = CURRENT_TIMESTAMP
@@ -146,21 +130,19 @@ export const updateLastLogin = async (
   await pool.query(query, [userId]);
 };
 
-export const storeRefreshToken =
-  async (
-    userId: string,
-    refreshToken: string
-  ) => {
-
-    await pool.query(
-      `
+export const storeRefreshToken = async (
+  userId: string,
+  refreshToken: string,
+) => {
+  await pool.query(
+    `
       DELETE FROM refresh_tokens
       WHERE user_id = $1
       `,
-      [userId]
-    );
+    [userId],
+  );
 
-    const query = `
+  const query = `
       INSERT INTO refresh_tokens (
         user_id,
         refresh_token,
@@ -173,8 +155,5 @@ export const storeRefreshToken =
       )
     `;
 
-    await pool.query(query, [
-      userId,
-      refreshToken,
-    ]);
+  await pool.query(query, [userId, refreshToken]);
 };

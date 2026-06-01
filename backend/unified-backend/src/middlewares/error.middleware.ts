@@ -6,11 +6,10 @@ export const errorMiddleware = (
   error: any,
   _req: Request,
   res: Response,
-  _next: NextFunction
+  _next: NextFunction,
 ) => {
   logger.error({
     message: error.message,
-
     stack: error.stack,
   });
 

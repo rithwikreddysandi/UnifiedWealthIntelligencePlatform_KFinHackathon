@@ -1,10 +1,6 @@
-import {
-  Request,
-  Response,
-  NextFunction,
-} from "express";
+import { Request, Response, NextFunction } from "express";
 
-import jwt from "jsonwebtoken"
+import jwt from "jsonwebtoken";
 
 import {
   createInvestorAccount,
@@ -12,59 +8,39 @@ import {
   updateLastLogin,
 } from "../services/auth.service.js";
 
-import {
-  hashPassword,
-  comparePassword,
-} from "../utils/bcrypt.js";
+import { hashPassword, comparePassword } from "../utils/bcrypt.js";
 
 import { generateAccessToken, generateRefreshToken } from "../utils/jwt.js";
-import {storeRefreshToken} from '../services/auth.service.js'
+import { storeRefreshToken } from "../services/auth.service.js";
 
-import {
-  successResponse,
-  errorResponse,
-} from "../utils/response.js";
+import { successResponse, errorResponse } from "../utils/response.js";
 
 export const register = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   try {
-    const {
+    const { full_name, email, password, phone, pan_number, dob, risk_profile } =
+      req.body;
+
+    const existingUser = await findUserByEmail(email);
+
+    if (existingUser) {
+      return errorResponse(res, "User already exists", 400);
+    }
+
+    const hashedPassword = await hashPassword(password);
+
+    const result = await createInvestorAccount({
       full_name,
       email,
-      password,
+      password_hash: hashedPassword,
       phone,
       pan_number,
       dob,
       risk_profile,
-    } = req.body;
-
-    const existingUser =
-      await findUserByEmail(email);
-
-    if (existingUser) {
-      return errorResponse(
-        res,
-        "User already exists",
-        400
-      );
-    }
-
-    const hashedPassword =
-      await hashPassword(password);
-
-    const result =
-      await createInvestorAccount({
-        full_name,
-        email,
-        password_hash: hashedPassword,
-        phone,
-        pan_number,
-        dob,
-        risk_profile,
-      });
+    });
 
     const token = generateAccessToken({
       id: result.user.id,
@@ -79,15 +55,14 @@ export const register = async (
 
         user: {
           id: result.user.id,
-          full_name:
-            result.user.full_name,
+          full_name: result.user.full_name,
           email: result.user.email,
           role: "INVESTOR",
         },
 
         investor: result.investor,
       },
-      201
+      201,
     );
   } catch (error) {
     next(error);
@@ -97,83 +72,58 @@ export const register = async (
 export const login = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   try {
     const { email, password } = req.body;
 
-    const user =
-      await findUserByEmail(email);
+    const user = await findUserByEmail(email);
 
     if (!user) {
-      return errorResponse(
-        res,
-        "Invalid credentials",
-        401
-      );
+      return errorResponse(res, "Invalid credentials", 401);
     }
 
-    const isPasswordValid =
-      await comparePassword(
-        password,
-        user.password_hash
-      );
+    const isPasswordValid = await comparePassword(password, user.password_hash);
 
     if (!isPasswordValid) {
-      return errorResponse(
-        res,
-        "Invalid credentials",
-        401
-      );
+      return errorResponse(res, "Invalid credentials", 401);
     }
 
     await updateLastLogin(user.id);
 
-    const accessToken =
-  generateAccessToken({
-    id: user.id,
-    role: user.role_name,
-  });
+    const accessToken = generateAccessToken({
+      id: user.id,
+      role: user.role_name,
+    });
 
-const refreshToken =
-  generateRefreshToken({
-    id: user.id,
-  });
+    const refreshToken = generateRefreshToken({
+      id: user.id,
+    });
 
-await storeRefreshToken(
-  user.id,
-  refreshToken
-);
+    await storeRefreshToken(user.id, refreshToken);
 
-    return successResponse(
-      res,
-      "Login successful",
-      {
-        accessToken,
-        refreshToken,
-        user: {
-          id: user.id,
-          full_name: user.full_name,
-          email: user.email,
-          role: user.role_name,
-        },
+    return successResponse(res, "Login successful", {
+      accessToken,
+      refreshToken,
+      user: {
+        id: user.id,
+        full_name: user.full_name,
+        email: user.email,
+        role: user.role_name,
+      },
 
-        investor: user.investor_id
-          ? {
-              investor_id:
-                user.investor_id,
+      investor: user.investor_id
+        ? {
+            investor_id: user.investor_id,
 
-              phone: user.phone,
+            phone: user.phone,
 
-              pan_number:
-                user.pan_number,
+            pan_number: user.pan_number,
 
-              risk_profile:
-                user.risk_profile,
-            }
-          : null,
-      }
-    );
+            risk_profile: user.risk_profile,
+          }
+        : null,
+    });
   } catch (error) {
     next(error);
   }
@@ -182,47 +132,33 @@ await storeRefreshToken(
 export const logout = async (
   _req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   try {
-    return successResponse(
-      res,
-      "Logout successful"
-    );
+    return successResponse(res, "Logout successful");
   } catch (error) {
     next(error);
   }
 };
 
-export const refreshAccessToken =
-  async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) => {
-    try {
-      const { refresh_token } =
-        req.body;
+export const refreshAccessToken = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { refresh_token } = req.body;
 
-      const decoded = jwt.verify(
-        refresh_token,
-        process.env.JWT_SECRET!
-      ) as any;
+    const decoded = jwt.verify(refresh_token, process.env.JWT_SECRET!) as any;
 
-      const accessToken =
-        generateAccessToken({
-          id: decoded.id,
-        });
+    const accessToken = generateAccessToken({
+      id: decoded.id,
+    });
 
-      return successResponse(
-        res,
-        "Token refreshed",
-        {
-          access_token:
-            accessToken,
-        }
-      );
-    } catch (error) {
-      next(error);
-    }
-  };
+    return successResponse(res, "Token refreshed", {
+      access_token: accessToken,
+    });
+  } catch (error) {
+    next(error);
+  }
+};

@@ -1,108 +1,119 @@
 "use client";
 
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import { createContext, useContext, useEffect, useState } from "react";
+
+export type UserRole = "ADMIN" | "OPERATIONS" | "COMPLIANCE" | "INVESTOR";
 
 interface AuthContextType {
   token: string | null;
 
-  role: string | null;
+  role: UserRole | null;
 
   investorId: string | null;
 
   user: any | null;
 
-  login: (token: string, role: string, investorId?: string | null, user?: any | null) => void;
+  loading: boolean;
+
+  login: (
+    token: string,
+    role: UserRole,
+    investorId?: string | null,
+    user?: any | null,
+  ) => void;
 
   logout: () => void;
 
-  loading: boolean;
+  isAuthenticated: boolean;
 }
 
-const AuthContext =
-  createContext<AuthContextType | null>(
-    null
-  );
+const AuthContext = createContext<AuthContextType | null>(null);
 
-export const AuthProvider = ({
-  children,
-}: {
-  children: React.ReactNode;
-}) => {
-
+export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [token, setToken] = useState<string | null>(null);
-  const [role, setRole] = useState<string | null>(null);
+
+  const [role, setRole] = useState<UserRole | null>(null);
+
   const [investorId, setInvestorId] = useState<string | null>(null);
+
   const [user, setUser] = useState<any | null>(null);
+
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const storedToken = localStorage.getItem("token");
-    const storedRole = localStorage.getItem("role");
-    const storedInvestorId = localStorage.getItem("investorId");
-    const storedUser = localStorage.getItem("user");
+    try {
+      const storedToken = localStorage.getItem("token");
 
-    if (storedToken) {
-      setToken(storedToken);
+      const storedRole = localStorage.getItem("role");
+
+      const storedInvestorId = localStorage.getItem("investorId");
+
+      const storedUser = localStorage.getItem("user");
+
+      if (storedToken) {
+        setToken(storedToken);
+      }
+
+      if (storedRole) {
+        setRole(storedRole as UserRole);
+      }
+
+      if (storedInvestorId) {
+        setInvestorId(storedInvestorId);
+      }
+
+      if (storedUser) {
+        setUser(JSON.parse(storedUser));
+      }
+    } catch (error) {
+      console.error("Failed to restore auth state:", error);
+    } finally {
+      setLoading(false);
     }
-
-    if(storedRole){
-        setRole(storedRole)
-    }
-
-    if (storedInvestorId) {
-      setInvestorId(storedInvestorId);
-    }
-
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
-
-    setLoading(false);
   }, []);
 
   const login = (
-  token: string,
-  role: string,
-  investorId?: string | null,
-  user?: any | null
-) => {
+    token: string,
+    role: UserRole,
+    investorId?: string | null,
+    user?: any | null,
+  ) => {
+    localStorage.setItem("token", token);
 
-  localStorage.setItem("token",token);
+    localStorage.setItem("role", role);
 
-  localStorage.setItem("role", role);
+    setToken(token);
 
-  if (investorId) {
-    localStorage.setItem("investorId", investorId);
-    setInvestorId(investorId);
-  } else {
-    localStorage.removeItem("investorId");
-    setInvestorId(null);
-  }
+    setRole(role);
 
-  setToken(token);
+    if (investorId) {
+      localStorage.setItem("investorId", investorId);
 
-  setRole(role);
+      setInvestorId(investorId);
+    } else {
+      localStorage.removeItem("investorId");
 
-  if (user) {
-    localStorage.setItem("user", JSON.stringify(user));
-    setUser(user);
-  } else {
-    localStorage.removeItem("user");
-    setUser(null);
-  }
-};
+      setInvestorId(null);
+    }
+
+    if (user) {
+      localStorage.setItem("user", JSON.stringify(user));
+
+      setUser(user);
+    } else {
+      localStorage.removeItem("user");
+
+      setUser(null);
+    }
+  };
 
   const logout = () => {
-    localStorage.removeItem(
-      "token"
-    );
+    localStorage.removeItem("token");
+
     localStorage.removeItem("role");
+
     localStorage.removeItem("investorId");
+
     localStorage.removeItem("user");
 
     setToken(null);
@@ -115,12 +126,13 @@ export const AuthProvider = ({
     <AuthContext.Provider
       value={{
         token,
-        login,
-        logout,
-        loading,
         role,
         investorId,
-        user
+        user,
+        loading,
+        login,
+        logout,
+        isAuthenticated: !!token,
       }}
     >
       {children}
@@ -129,14 +141,10 @@ export const AuthProvider = ({
 };
 
 export const useAuth = () => {
-
-  const context =
-    useContext(AuthContext);
+  const context = useContext(AuthContext);
 
   if (!context) {
-    throw new Error(
-      "useAuth must be used inside AuthProvider"
-    );
+    throw new Error("useAuth must be used inside AuthProvider");
   }
 
   return context;

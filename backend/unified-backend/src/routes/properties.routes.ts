@@ -26,36 +26,27 @@ router.use(authMiddleware);
 router.post(
   "/",
 
-  authorize([
-    "ADMIN",
-    "OPERATIONS",
-    "ADVISOR",
-    "INVESTOR"
-  ]),
+  authorize(["ADMIN", "OPERATIONS", "ADVISOR", "INVESTOR"]),
 
   createPropertyValidation,
 
   validate,
 
-  createProperty
+  createProperty,
 );
 
 router.get(
   "/",
 
-  authorize([
-    "ADMIN",
-    "OPERATIONS",
-    "ADVISOR",
-  ]),
+  authorize(["ADMIN", "OPERATIONS", "ADVISOR"]),
 
-  getAllProperties
+  getAllProperties,
 );
 
 router.get(
   "/investor/:investorId",
 
-  getInvestorProperties
+  getInvestorProperties,
 );
 
 router.put(
@@ -65,7 +56,7 @@ router.put(
 
   validate,
 
-  updateProperty
+  updateProperty,
 );
 
 router.delete(
@@ -73,7 +64,7 @@ router.delete(
 
   authorize(["ADMIN"]),
 
-  deleteProperty
+  deleteProperty,
 );
 
 export default router;
