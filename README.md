@@ -85,6 +85,51 @@ This platform addresses these challenges by providing a centralized operational 
 * Compliance Tracking
 * Historical Reporting
 
+
+---
+
+### Frontend Screens
+<p align="center">
+  <img src="frontend\FrontendScreens\Landing Page.png" alt="Landing Page">
+</p>
+
+<p align="center">
+  <img src="frontend\FrontendScreens\Login Page.png" alt="Login Page">
+  <img src="frontend\FrontendScreens\Register Page.png" alt="Register Page">
+</p>
+
+<p align="center">
+  <img src="frontend\FrontendScreens\Investor Dashboard.png" width="45%" />
+  <img src="frontend\FrontendScreens\Investor Dashboard 2.png" width="45%" />
+</p>
+
+<p align="center">
+  <img src="frontend\FrontendScreens\Investor Protfolio.png" width="45%" />
+  <img src="frontend\FrontendScreens\Investor Portfolio - MF.png" width="45%" />
+</p>
+
+<p align="center">
+  <img src="frontend\FrontendScreens\Equity Desk.png" alt="Investor Equity Desk">
+</p>
+
+<p align="center">
+  <img src="frontend\FrontendScreens\Mutual Fund Desk.png" alt="Investor Mutual Fund Desk">
+</p>
+
+<p align="center">
+  <img src="frontend\FrontendScreens\Investor Profile.png" alt="Investor Profile">
+</p>
+
+
+<p align="center">
+  <img src="frontend\FrontendScreens\Admin Dashboard.png" alt="Admin Dashboard">
+</p>
+
+<p align="center">
+  <img src="frontend\FrontendScreens\Audit Logs.png" alt="Audit Logs">
+</p>
+
+---
 ---
 
 ## Backend Architecture
